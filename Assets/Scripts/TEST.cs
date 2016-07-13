@@ -15,20 +15,20 @@ public class TEST : MonoBehaviour {
         switch (whatToDo)
         {
             case StuffThisCanDo.outPutPosition:
-                Debug.Log(string.Format("{0} position: {1}", name, transform.position.ToString() ) );
+                //Debug.Log(string.Format("{0} position: {1}", name, transform.position.ToString() ) );
                 break;
 
             case StuffThisCanDo.outPutRightEdge:
-                Debug.Log(string.Format("{0} [RIGHT] edge: {1}", name, Helper.GetEdge(GetComponent<Collider2D>(),"RIGHT")));
+                Debug.Log(string.Format("{0} [RIGHT] edge: {1}", name, Helper.GetEdge(GetComponent<BoxCollider2D>(),"RIGHT")));
                 break;
             case StuffThisCanDo.outPutLeftEdge:
-                Debug.Log(string.Format("{0} [LEFT] edge: {1}", name, Helper.GetEdge(GetComponent<Collider2D>(), "LEFT")));
+                Debug.Log(string.Format("{0} [LEFT] edge: {1}", name, Helper.GetEdge(GetComponent<BoxCollider2D>(), "LEFT")));
                 break;
             case StuffThisCanDo.outPutTopEdge:
-                Debug.Log(string.Format("{0} [TOP] edge: {1}", name, Helper.GetEdge(GetComponent<Collider2D>(), "TOP")));
+                Debug.Log(string.Format("{0} [TOP] edge: {1}", name, Helper.GetEdge(GetComponent<BoxCollider2D>(), "TOP")));
                 break;
             case StuffThisCanDo.outPutBottomEdge:
-                Debug.Log(string.Format("{0} [BOTTOM] edge: {1}", name, Helper.GetEdge(GetComponent<Collider2D>(), "BOTTOM")));
+                Debug.Log(string.Format("{0} [BOTTOM] edge: {1}", name, Helper.GetEdge(GetComponent<BoxCollider2D>(), "BOTTOM")));
                 break;
         }
     }   

@@ -8,9 +8,7 @@ public class OneSidedPlatform : MonoBehaviour {
     private Collider2D[] playerColliders;
     private Collider2D platCollider;
 
-    private Transform playerHead; // the ceilingCheck of the player
-    private Transform playerFeet; // the groundCheck of the player
-    private Transform platformTop; // should have the same y as the surface of the platform
+    private float platSurface; // the y coord of the platforms surface
 
     // true when the player is no longer on the trigger, but he's still neither above nor below the platform
     private bool playerGoingThroughPlat = false;
@@ -20,10 +18,7 @@ public class OneSidedPlatform : MonoBehaviour {
         // set up references
         platCollider = PlatColliderObject.GetComponent<Collider2D>();
         playerColliders = player.GetComponents<Collider2D>();
-        playerHead = player.transform.Find("CeilingCheck");
-        playerFeet = player.transform.Find("GroundCheck");
-        platformTop = gameObject.transform.Find("Surface");
-
+        platSurface = Helper.GetRealPos(platCollider).y;
         if (!player) // if player reference not set, search for it with tag
             player = GameObject.FindGameObjectWithTag("Player");
     }
@@ -32,18 +27,18 @@ public class OneSidedPlatform : MonoBehaviour {
     {
         if (playerGoingThroughPlat) // becomes true right after player leaves trigger
         {
+            Debug.Log("player out of trigger area but not done yet");
             // wait until either players feet are above the platform, or his head is below it
             // then re-enable collisions.
             // NOTE: this may have unintended side effects if the player is allowed to go right
             //       or left and then return to the platform.
-            float feetHeight = playerFeet.position.y;
-            float headHeight = playerHead.position.y;
-            float platCenterHeight = Helper.GetRealPos(platCollider).y;
-            float platSurfaceHeight = platformTop.position.y;
-            if (feetHeight >= platSurfaceHeight || headHeight <= platCenterHeight)
+            float feetHeight = getPlayerFeetHeight();
+            float headHeight = getPlayerHeadHeight();
+            if (feetHeight >= platSurface || headHeight <= platSurface)
             {
                 SetCollisionStatus(true); // re-enable collisions between player and platform
                 playerGoingThroughPlat = false;
+                //Debug.Log(string.Format("player above or below platform. resetting collisions. platHeight: {0}, feetHeight: {1}, headHeight: {2}", platSurface, feetHeight, headHeight));
             }
         }
         DebugLogIgnore();
@@ -55,6 +50,7 @@ public class OneSidedPlatform : MonoBehaviour {
         if (otherCollider.gameObject == player)
         {
             SetCollisionStatus(false); // disable collisions between platform and player
+            Debug.Log("player entered trigger- collisions = false");
         }
     }
 
@@ -100,5 +96,13 @@ public class OneSidedPlatform : MonoBehaviour {
         //                        , Physics2D.GetIgnoreCollision(playerColliders[1], platCollider)
         //                        )
         //         );
+    }
+    private float getPlayerFeetHeight()
+    {
+        return player.transform.Find("GroundCheck").position.y;
+    }
+    private float getPlayerHeadHeight()
+    {
+        return player.transform.Find("CeilingCheck").position.y;
     }
 }

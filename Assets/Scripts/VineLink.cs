@@ -1,24 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System;
 
-public class ClimbableTree : MonoBehaviour {
-    // A script for a tree that's climbable.
-    // the basic script for climbable GameObjects
-    
+public class VineLink : MonoBehaviour
+{
     public GameObject player;
     private ScoutController playerController;
-    [Tooltip("you can speed up or slow down the players climbing speed with this. 1 = default speed")]
-    public float climbEase;
-    [Tooltip("if true, player will not be able to leave the climbing area from the sides")]
-    public bool restrictHorizontal; // NOTE: this functionality mostly implemented in ScoutController, using right/leftBounds
+    public float swingEase;
 
-    private float leftBound;
-    private float rightBound;
+    public GameObject vineRoot;
 
     private bool bodyIn = false; // has the body (box collider) of the player entered the trigger?
     private bool feetIn = false; // have the feet (circle collider) of the player entered the trigger?
-
 
 
     void Awake()
@@ -26,21 +18,18 @@ public class ClimbableTree : MonoBehaviour {
         // set up references
         if (!player)
             player = GameObject.FindGameObjectWithTag("Player");
-        Debug.Log("Player = " + player.name);
 
         playerController = player.GetComponent<ScoutController>();
-
-        leftBound = transform.Find("Left Bound").position.x;
-        rightBound = transform.Find("Right Bound").position.x;
-
+        vineRoot = transform.parent.gameObject;
     }
 
     void OnTriggerEnter2D(Collider2D otherCollider)
     {
         // only react to the player
-        if(otherCollider.gameObject == player)
+        if (otherCollider.gameObject == player)
         {
-            Debug.Log("entered climb trigger");
+            //Debug.Log("entered swing trigger");
+
             // see which part of the player entered the trigger 
             if (otherCollider.GetType() == typeof(BoxCollider2D))
             {
@@ -53,7 +42,7 @@ public class ClimbableTree : MonoBehaviour {
             else
                 throw new System.ArgumentException("The player should have ONLY ONE box collider and circle collider. recieved one that is neither.");
 
-            SetClimbStatus();
+            SetSwingStatus();
         }
     }
 
@@ -76,41 +65,30 @@ public class ClimbableTree : MonoBehaviour {
             else
                 throw new System.ArgumentException("The player should have ONLY ONE box collider and circle collider. recieved one that is neither.");
 
-            SetClimbStatus();
+            SetSwingStatus();
         }
     }
 
-    private void SetClimbStatus()
+    private void SetSwingStatus()
     {
-        // NOTE: this handles setting the availableForClimb reference in the player controller
-        //       and when to STOP climbing. STARTING to climb is handled in the Move() method in the player controller.
-
+        // NOTE: this handles setting the availableForSwing references in the player controller
+        //       the swingingOnThis and when to StartSwinging()/StopSwinging()
+        //       is handled in the Move() method in the player controller.
+        Debug.Log("feet in? " + feetIn.ToString() + " body in? " + bodyIn.ToString() + "in list? " + playerController.availableForSwing.Contains(gameObject).ToString());
         if (feetIn || bodyIn)
-        { // if player is at least partially in the trigger, make sure this is available to climb on
-            playerController.availableForClimb = gameObject;
+        { // if player is at least partially in the trigger, make sure this is available to swing on
+            if(!playerController.availableForSwing.Contains(gameObject))
+                playerController.availableForSwing.Add(gameObject);
         }
         if (!feetIn && !bodyIn)
         { // both the player's feet and body are out of the trigger area
-            
+
             // if this is available for climb for the player
-            if (playerController.availableForClimb && playerController.availableForClimb == gameObject) 
-                playerController.availableForClimb = null;
-            
-            // if player is climbing on this
-            if (playerController.climbingOnThis && playerController.climbingOnThis == gameObject) 
-                playerController.StopClimbing();
+            if (playerController.availableForSwing.Contains(gameObject))
+            {
+                playerController.availableForSwing.Remove(gameObject);
+            }
         }
     }
 
-    public float getBound(string side)
-    {
-        if (side.ToUpper() == "LEFT")
-            return leftBound;
-        else if (side.ToUpper() == "RIGHT")
-        {
-            return rightBound;
-        }
-        else
-            throw new ArgumentException("getBound(string) argument must be either \"LEFT\" or \"RIGHT\"!");
-    }
 }
