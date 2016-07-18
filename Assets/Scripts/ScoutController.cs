@@ -5,14 +5,10 @@ using UnityEngine;
 public class ScoutController : MonoBehaviour
 {
 
-    [SerializeField]
-    private float m_MaxSpeed = 10f;                    // The fastest the player can travel in the x axis.
-    [SerializeField]
-    private float m_JumpForce = 400f;                  // Amount of force added when the player jumps.
-    [SerializeField]
-    private bool m_AirControl = false;                 // Whether or not a player can steer while jumping;
-    [SerializeField]
-    private LayerMask m_WhatIsGround;                  // A mask determining what is ground to the character
+    [SerializeField] private float m_MaxSpeed = 10f;                    // The fastest the player can travel in the x axis.
+    [SerializeField] private float m_JumpForce = 400f;                  // Amount of force added when the player jumps.
+    [SerializeField] private bool m_AirControl = false;                 // Whether or not a player can steer while jumping;
+    [SerializeField] private LayerMask m_WhatIsGround;                  // A mask determining what is ground to the character
 
     private Transform m_GroundCheck; // A position marking where to check if the player is grounded.
     const float k_GroundedRadius = .2f; // Radius of the overlap circle to determine if grounded
@@ -30,16 +26,13 @@ public class ScoutController : MonoBehaviour
     //
     //// CLIMBING
     //
-    // null if not climbing on, otherwise has a reference to the object currently climbing on
-    [HideInInspector]
-    public GameObject climbingOnThis;
-    // will have a reference to a climbable object if you're in the vicinity of one. null otherwise.
-    [HideInInspector]
-    public GameObject availableForClimb;
-    [SerializeField]
-    private float m_climbSpeed;
-    private float m_gravityScaleDefault;       // Since climbing disables gravity, keep track of original value
-    private bool climbDisabled = false; // disable climbing for a short period after jumping
+
+    [HideInInspector] public GameObject climbingOnThis;    // null if not climbing on, otherwise has a reference to the object currently climbing on
+
+    [HideInInspector] public GameObject availableForClimb; // will have a reference to a climbable object if you're in the vicinity of one. null otherwise.
+    [SerializeField]  private float m_climbSpeed;
+    private float m_gravityScaleDefault;                   // Since climbing disables gravity, keep track of original value
+    private bool climbDisabled = false;                    // disable climbing for a short period after jumping
 
     [SerializeField]
     [Tooltip("after jumping from a climbable surface climbing will be disabled on that object for this short time")]
@@ -54,25 +47,26 @@ public class ScoutController : MonoBehaviour
     //
     //// SWINGING
     //
-    // null if not swinging, otherwise has a reference to the object currently climbing on
-    [HideInInspector]
-    public GameObject swingingOnThis;
-    // will have a reference to swingable objects if you're in the vicinity of some. empty otherwise.
-    //[HideInInspector]
-    public List<GameObject> availableForSwing;
-    [SerializeField]
-    private float m_swingSpeed;
-    public bool allowVerticalSwing;
+    
+    [HideInInspector] public GameObject swingingOnThis;          // null if not swinging, otherwise has a reference to the object currently climbing on
+    
+    [HideInInspector] public List<GameObject> availableForSwing; // will have a reference to swingable objects if you're in the vicinity of some. empty otherwise.
+    [SerializeField]  private float m_swingSpeed;
+    
+    [Tooltip("after jumping from a swingable object swinging on that object will be disabled for this short time")]
+    [SerializeField] private float swingDisableTime = 0.2f;
 
-    FixedJoint2D swingJoint; // joint to be added to the player  attached to the vine while swinging
+    [SerializeField] private bool vineAutoAttach;
+    //[SerializeField] private bool allowSlideDownVine;
+    // Might be too much work to finish this, since id have to implement a better way to find the closest vine (started on that using raycasting)
+    // and since i just lower swingJoint to slide down, id have to handle situations when i hit the ground. probably would be easier to design levels such that you dont need this.
+
+    FixedJoint2D swingJoint;                                    // joint to be added to the player  attached to the vine while swinging
     private VineLink vineScript;
 
-    [SerializeField]
-    [Tooltip("after jumping from a swingable object swinging on that object will be disabled for this short time")]
-    private float swingDisableTime;
+
     private bool swingDisabled;
     private float swingDisableCounter = 0;
-    [SerializeField]
     private GameObject disabledVineRoot;
 
     //
@@ -175,24 +169,22 @@ public class ScoutController : MonoBehaviour
             Climb(moveHor, moveVer, jump);
             return;
         }
-        else if (availableForSwing.Count > 0 && (moveVer > 0 || jump))
-        { // if there's a vine available and the player presses up or space
-            GameObject chosenLink = chooseVineLink(); //chosenLink will be null if theres no vine that's not in the disabled vineRoot!
-            if (chosenLink) // if theres a link thats not on a disabled root
-                StartSwinging(chosenLink);
+        else if (chooseVineLink(moveVer, jump))
+        { // if there's a vine available that is not disabled, and the player presses up or space (or autoattach is enabled)
+            StartSwinging(chooseVineLink(moveVer, jump));
         }
 
         else if (availableForClimb && moveVer > 0)
         { // if there's an object you can climb and user presses up
-            if ( !(climbDisabled && disabledClimbObject == availableForClimb) ) // make sure climb is enabled for this object
-            StartClimbing(availableForClimb);
+            if (!(climbDisabled && disabledClimbObject == availableForClimb)) // make sure climb is enabled for this object
+                StartClimbing(availableForClimb);
         }
 
 
         //if not climbing or swinging - only control the player if grounded or airControl is turned on
         if (m_Grounded || m_AirControl)
         {
-            
+
             // The Speed animator parameter is set to the absolute value of the horizontal input.
             m_Anim.SetFloat("Speed", Mathf.Abs(moveHor));
 
@@ -220,6 +212,7 @@ public class ScoutController : MonoBehaviour
     }
 
 
+
     private void Climb(float moveHor, float moveVer, bool jump)
     {
         Debug.Log("Climbing");
@@ -238,17 +231,23 @@ public class ScoutController : MonoBehaviour
 
         else
         {
-            if (treeScript.restrictHorizontal)
-            { // if restrictToColliderArea is true, make sure the player doesn't leave the tree's collider
-                if (
-                   (moveHor < 0 && Helper.GetEdge(m_bodyCollider, "LEFT") <= treeScript.getBound("LEFT"))
-                || (moveHor > 0 && Helper.GetEdge(m_bodyCollider, "RIGHT") >= treeScript.getBound("RIGHT")))
-                { // player is trying to leave the climbable area, kill his horizontal movement
-                    Debug.Log("killing horizontal movement. moveHor: " + moveHor);
-                    moveHor = 0;
-                }
+            if (!treeScript.allowHorizontal)
+            {
+                moveHor = 0;
+            }
+            else if (
+               (moveHor < 0 && Helper.GetEdge(m_bodyCollider, "LEFT") <= treeScript.getBound("LEFT"))
+            || (moveHor > 0 && Helper.GetEdge(m_bodyCollider, "RIGHT") >= treeScript.getBound("RIGHT")))
+            { // player is trying to leave the climbable area, kill his horizontal movement
+                Debug.Log("killing horizontal movement. moveHor: " + moveHor);
+                moveHor = 0;
             }
 
+            if (treeScript.restrictVertical)
+            {
+                if (moveVer > 0 && m_CeilingCheck.position.y >= treeScript.getBound("TOP")) // if head has reached top of climbing area, and player presses up
+                    moveVer = 0; // kill vertical movement
+            }
 
             float speedMultiplier = treeScript.climbEase * m_climbSpeed; // take player climb speed as well as tree climb ease into consideration
             m_Rigidbody2D.velocity = new Vector2(moveHor, moveVer) * speedMultiplier;
@@ -270,7 +269,7 @@ public class ScoutController : MonoBehaviour
         tempDisableClimb(climbingOnThis);
         climbingOnThis = null;
         treeScript = null;
-        
+
     }
     private void tempDisableClimb(GameObject wasClimbingOnThis)
     {
@@ -290,11 +289,15 @@ public class ScoutController : MonoBehaviour
         else
         {
             float speedMultiplier = m_swingSpeed * vineScript.swingEase;
-            if (!allowVerticalSwing)
-                moveVer = 0; //if vertcal swing is disallowed, disregaurd vertical input
-            Vector2 userInput = new Vector2(moveHor, moveVer);
+            Vector2 userInput = new Vector2(moveHor, 0);
+
             //Debug.Log(string.Format("Adding force {0} to object {1}",userInput* speedMultiplier, swingingOnThis.name ));
             swingingOnThis.GetComponent<Rigidbody2D>().AddForce(userInput * speedMultiplier);
+
+            //if (allowSlideDownVine && moveVer < 0 && !swingingOnThis.GetComponent<VineLink>().isLastLink)      // if shimmying down a vine is allowed and player presses down, and not on the last link
+            //{
+            //    swingJoint.connectedAnchor -= ((Vector2) swingingOnThis.transform.up) * m_climbSpeed * 0.01f; //lower anchor of joint connecting player and vine. use climbspeed to determine how fast this 
+            //}
 
 
             // If the input is moving the player right and the player is facing left...
@@ -311,17 +314,6 @@ public class ScoutController : MonoBehaviour
             }
         }
     }
-    private GameObject chooseVineLink()
-    {
-        if(!disabledVineRoot) // if no root is disabled, simply return first link in list
-            return availableForSwing[0];
-        //DEFAULT. will change this if it's problematic
-        foreach (GameObject link in availableForSwing) // return the first link thats not in a disabled vineRoot
-            if (link.GetComponent<VineLink>().vineRoot != disabledVineRoot)
-                return link;
-
-            return null;
-    }
     private void StartSwinging(GameObject chosenVineLink)
     {
         Debug.Log("StartSwinging() called");
@@ -333,11 +325,12 @@ public class ScoutController : MonoBehaviour
         // add a joint to fix distance between the vine and the player
         swingJoint = gameObject.AddComponent<FixedJoint2D>(); // attach a joint to maintain distance from vine
         swingJoint.connectedBody = swingingOnThis.GetComponent<Rigidbody2D>();
+        swingJoint.autoConfigureConnectedAnchor = false; // USED TO SLIDE DOWN VINE, CURRENTLY NOT IN USE
         m_Grounded = false;
         m_Anim.SetBool("Swing", true);
         vineScript = swingingOnThis.GetComponent<VineLink>();
     }
-    public void StopSwinging()
+    private void StopSwinging()
     {
         Destroy(swingJoint);
         m_Anim.SetBool("Swing", false);
@@ -354,7 +347,51 @@ public class ScoutController : MonoBehaviour
         swingDisableCounter = 0;
 
     }
+    private GameObject chooseVineLink(float moveVer, bool jump)
+    {
+        if (availableForSwing.Count == 0) // if there are no vines available, return false
+            return null;
 
+        var relevantLinks = new List<GameObject>();
+
+        if (!disabledVineRoot) // if no root is disabled, test all links in availableForSwing
+            relevantLinks = availableForSwing;
+        else
+            foreach (GameObject link in availableForSwing) // add only links whose vine is enabled
+                if (link.GetComponent<VineLink>().vineRoot != disabledVineRoot)
+                    relevantLinks.Add(link);
+
+
+        if (moveVer > 0 || jump) // if the player pressed up or space, simply return the first link in the list
+            return relevantLinks[0];
+
+        // if there are objects available for swing and the player didn't press, check if auto attach is enabled
+        if (vineAutoAttach)
+        { // check if links' root have auto attach override enabled, return the first applicable link else null
+            foreach (GameObject link in relevantLinks)
+            {
+                Vine root = link.GetComponent<VineLink>().vineRoot.GetComponent<Vine>();
+                if (!root.overrideAutoAttach || root.autoAttach == true)
+                    return link;
+            }
+            return null; // no applicable link found, return null
+        }
+        else
+        { // if auto attach disabled, check if one of the vines has overriden this
+            foreach (GameObject link in relevantLinks)
+            {
+                Vine root = link.GetComponent<VineLink>().vineRoot.GetComponent<Vine>();
+                if (root.overrideAutoAttach && root.autoAttach == true)
+                    return link;
+            }
+            return null; // no applicable link found, return null
+        }
+    }
+    private GameObject getClosestVine()
+    {
+        RaycastHit2D hitInfo = Physics2D.Raycast(transform.position, Vector3.right, 20, LayerMask.GetMask("Vines"));
+        return hitInfo.transform.gameObject;
+    }
 
     void Jump()
     {

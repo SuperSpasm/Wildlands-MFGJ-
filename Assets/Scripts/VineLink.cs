@@ -8,6 +8,7 @@ public class VineLink : MonoBehaviour
     public float swingEase;
 
     public GameObject vineRoot;
+    public bool isLastLink;
 
     private bool bodyIn = false; // has the body (box collider) of the player entered the trigger?
     private bool feetIn = false; // have the feet (circle collider) of the player entered the trigger?
@@ -21,6 +22,19 @@ public class VineLink : MonoBehaviour
 
         playerController = player.GetComponent<ScoutController>();
         vineRoot = transform.parent.gameObject;
+    }
+
+    void Start()
+    {
+        // to make sure that the last link is set up correctly, throw an error if this is connected to a link that is set as 'last'
+        Rigidbody2D body = GetComponent<HingeJoint2D>().connectedBody;
+        if (body)
+        {
+            VineLink linkedToThis = body.GetComponent<VineLink>();
+            if (linkedToThis.isLastLink)
+                throw new VineError(string.Format("{0} is marked as last link, but {1} is connected to it!", linkedToThis.gameObject.name, gameObject.name));
+        }
+        
     }
 
     void OnTriggerEnter2D(Collider2D otherCollider)

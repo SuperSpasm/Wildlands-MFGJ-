@@ -5,7 +5,7 @@ public class TEST : MonoBehaviour {
     public enum Mode { Start, Update, FixedUpdate }
     public Mode whenToDoStuff;
 
-    public enum StuffThisCanDo {outPutPosition, outPutLeftEdge, outPutRightEdge, outPutTopEdge, outPutBottomEdge }
+    public enum StuffThisCanDo {outPutPosition, outPutColliderPos, findClosestVine, outPutTopBorder, outPutBottomBorder, outPutLeftBorder, outPutRightBorder }
     public StuffThisCanDo whatToDo;
 
     // Use this for initialization
@@ -15,20 +15,29 @@ public class TEST : MonoBehaviour {
         switch (whatToDo)
         {
             case StuffThisCanDo.outPutPosition:
-                //Debug.Log(string.Format("{0} position: {1}", name, transform.position.ToString() ) );
+                Debug.Log(string.Format("{0} position: {1}", name, transform.position.ToString() ) );
                 break;
 
-            case StuffThisCanDo.outPutRightEdge:
-                Debug.Log(string.Format("{0} [RIGHT] edge: {1}", name, Helper.GetEdge(GetComponent<BoxCollider2D>(),"RIGHT")));
+            case StuffThisCanDo.outPutColliderPos:
+                Debug.Log(gameObject.name + " collider pos: " + Helper.GetRealPos(GetComponent<Collider2D>()) );
                 break;
-            case StuffThisCanDo.outPutLeftEdge:
-                Debug.Log(string.Format("{0} [LEFT] edge: {1}", name, Helper.GetEdge(GetComponent<BoxCollider2D>(), "LEFT")));
+
+            case StuffThisCanDo.findClosestVine:
+                RaycastHit2D hitInfo = Physics2D.Raycast(transform.position, Vector3.right, 0.3f, LayerMask.GetMask("Vines"));
+                Debug.Log("Closest vine: " + (hitInfo ? hitInfo.transform.gameObject.name : "null"));
                 break;
-            case StuffThisCanDo.outPutTopEdge:
-                Debug.Log(string.Format("{0} [TOP] edge: {1}", name, Helper.GetEdge(GetComponent<BoxCollider2D>(), "TOP")));
+
+            case StuffThisCanDo.outPutTopBorder:
+                Debug.Log(Helper.GetEdge(GetComponent<BoxCollider2D>(), "TOP"));
                 break;
-            case StuffThisCanDo.outPutBottomEdge:
-                Debug.Log(string.Format("{0} [BOTTOM] edge: {1}", name, Helper.GetEdge(GetComponent<BoxCollider2D>(), "BOTTOM")));
+            case StuffThisCanDo.outPutBottomBorder:
+                Debug.Log(Helper.GetEdge(GetComponent<BoxCollider2D>(), "BOTTOM"));
+                break;
+            case StuffThisCanDo.outPutRightBorder:
+                Debug.Log(Helper.GetEdge(GetComponent<BoxCollider2D>(), "RIGHT"));
+                break;
+            case StuffThisCanDo.outPutLeftBorder:
+                Debug.Log(Helper.GetEdge(GetComponent<BoxCollider2D>(), "LEFT"));
                 break;
         }
     }   

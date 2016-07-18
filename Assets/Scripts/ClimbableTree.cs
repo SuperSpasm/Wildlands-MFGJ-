@@ -11,10 +11,15 @@ public class ClimbableTree : MonoBehaviour {
     [Tooltip("you can speed up or slow down the players climbing speed with this. 1 = default speed")]
     public float climbEase;
     [Tooltip("if true, player will not be able to leave the climbing area from the sides")]
-    public bool restrictHorizontal; // NOTE: this functionality mostly implemented in ScoutController, using right/leftBounds
+    public Transform leftBoundary;
+    public Transform rightBoundary;
+    public Transform topBoundary;
+    public bool restrictVertical = false;
+    public bool allowHorizontal = true;
 
     private float leftBound;
     private float rightBound;
+    private float topBound;
 
     private bool bodyIn = false; // has the body (box collider) of the player entered the trigger?
     private bool feetIn = false; // have the feet (circle collider) of the player entered the trigger?
@@ -26,12 +31,13 @@ public class ClimbableTree : MonoBehaviour {
         // set up references
         if (!player)
             player = GameObject.FindGameObjectWithTag("Player");
-        Debug.Log("Player = " + player.name);
+        //Debug.Log("Player = " + player.name);
 
         playerController = player.GetComponent<ScoutController>();
 
-        leftBound = transform.Find("Left Bound").position.x;
-        rightBound = transform.Find("Right Bound").position.x;
+        leftBound = leftBoundary.position.x;
+        rightBound = rightBoundary.position.x;
+        topBound = topBoundary.position.y;
 
     }
 
@@ -104,13 +110,17 @@ public class ClimbableTree : MonoBehaviour {
 
     public float getBound(string side)
     {
-        if (side.ToUpper() == "LEFT")
-            return leftBound;
-        else if (side.ToUpper() == "RIGHT")
+        switch (side.ToUpper())
         {
-            return rightBound;
+
+            case "LEFT":
+                return leftBound;
+            case "RIGHT":
+                return rightBound;
+            case "TOP":
+                return topBound;
+            default:
+                throw new ArgumentException("getBound(string) argument must be either \"LEFT\", \"RIGHT\" or \"TOP\"!");
         }
-        else
-            throw new ArgumentException("getBound(string) argument must be either \"LEFT\" or \"RIGHT\"!");
     }
 }
