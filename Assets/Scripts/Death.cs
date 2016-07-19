@@ -17,8 +17,9 @@ public class Death : MonoBehaviour {
 	{
 		if (otherCollider.gameObject.GetHashCode() == scout.GetHashCode()) {
 			checkpoint = GameManager.Instance.getCheckpoint ();
-			scout.transform.Translate (checkpoint.x, checkpoint.y, 0.0f);
 			GameManager.Instance.respawn ();
+			scout.transform.Translate (checkpoint.x, checkpoint.y, 0.0f);
+
 		}
 	}
 }
