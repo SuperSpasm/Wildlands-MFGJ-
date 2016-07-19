@@ -23,6 +23,13 @@ public class PlayMusic : MonoBehaviour {
 		//Call the PlayLevelMusic function to start playing music
 	}
 
+    void Start()
+    {
+        // if starting in the 2nd scene (testing), start with mixer turned all the way down
+        if (SceneManager.GetActiveScene().buildIndex == 2)
+            volumeDown.TransitionTo(0);
+    }
+
 
 	public void PlayLevelMusic()
 	{
