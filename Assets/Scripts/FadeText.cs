@@ -15,7 +15,7 @@ public class FadeText : MonoBehaviour {
 	public void changeText()	//called at the end of fade out animation clip
 	{
 		if (iterator >= textstrings.Length) {
-			SceneManager.LoadScene (2);				//this is temporary
+							//this is temporary
 			return;
 		}
 		text.text = "" + textstrings [iterator];
@@ -43,10 +43,18 @@ public class FadeText : MonoBehaviour {
 	}
 
 	void Update () {
-		if (Input.GetButtonUp ("Jump") && !fade) {
+        if (Input.GetButtonUp("Submit"))
+            Debug.Log("submit let go");
+        if(Input.GetButtonUp ("Submit") || iterator == textstrings.Length){
+            fadeTextAnim.SetTrigger("finish");
+        }
+		else if (Input.GetButtonUp ("Jump") && !fade) {
 			playAnim ();
-
 		}
 	}
+
+    public void loadNextLevel() {
+        SceneManager.LoadScene(2);
+    }
 
 }
