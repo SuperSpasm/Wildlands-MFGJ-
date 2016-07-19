@@ -46,7 +46,6 @@ public class ClimbableTree : MonoBehaviour {
         // only react to the player
         if(otherCollider.gameObject == player)
         {
-            Debug.Log("entered climb trigger");
             // see which part of the player entered the trigger 
             if (otherCollider.GetType() == typeof(BoxCollider2D))
             {

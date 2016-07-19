@@ -27,7 +27,7 @@ public class OneSidedPlatform : MonoBehaviour {
     {
         if (playerGoingThroughPlat) // becomes true right after player leaves trigger
         {
-            Debug.Log("player out of trigger area but not done yet");
+            
             // wait until either players feet are above the platform, or his head is below it
             // then re-enable collisions.
             // NOTE: this may have unintended side effects if the player is allowed to go right
@@ -50,7 +50,6 @@ public class OneSidedPlatform : MonoBehaviour {
         if (otherCollider.gameObject == player)
         {
             SetCollisionStatus(false); // disable collisions between platform and player
-            Debug.Log("player entered trigger- collisions = false");
         }
     }
 

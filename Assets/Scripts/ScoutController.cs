@@ -219,7 +219,7 @@ public class ScoutController : MonoBehaviour
 
         if (jump)
         {   // detach from tree, jump
-            Debug.Log("climb->jump");
+            //Debug.Log("climb->jump");
             StopClimbing();
             Jump();
         }
@@ -263,7 +263,7 @@ public class ScoutController : MonoBehaviour
     }
     public void StopClimbing()
     {
-        Debug.Log("STOP CLIMBING METHOD CALLED");
+        //Debug.Log("STOP CLIMBING METHOD CALLED");
         m_Rigidbody2D.gravityScale = m_gravityScaleDefault;
         m_Anim.SetBool("Climb", false);
         tempDisableClimb(climbingOnThis);
@@ -273,7 +273,7 @@ public class ScoutController : MonoBehaviour
     }
     private void tempDisableClimb(GameObject wasClimbingOnThis)
     {
-        Debug.Log("tempDisableClimb() called");
+        //Debug.Log("tempDisableClimb() called");
         climbDisabled = true;
         climbDisableCounter = 0;
         disabledClimbObject = wasClimbingOnThis;

@@ -88,7 +88,8 @@ public class VineLink : MonoBehaviour
         // NOTE: this handles setting the availableForSwing references in the player controller
         //       the swingingOnThis and when to StartSwinging()/StopSwinging()
         //       is handled in the Move() method in the player controller.
-        Debug.Log("feet in? " + feetIn.ToString() + " body in? " + bodyIn.ToString() + "in list? " + playerController.availableForSwing.Contains(gameObject).ToString());
+        
+        //Debug.Log("feet in? " + feetIn.ToString() + " body in? " + bodyIn.ToString() + "in list? " + playerController.availableForSwing.Contains(gameObject).ToString());
         if (feetIn || bodyIn)
         { // if player is at least partially in the trigger, make sure this is available to swing on
             if(!playerController.availableForSwing.Contains(gameObject))

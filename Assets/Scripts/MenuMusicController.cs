@@ -25,6 +25,7 @@ public class MenuMusicController : MonoBehaviour {
 
     }
 
+
     void OnTriggerEnter2D (Collider2D otherCollider)
     {
         if (startMusicOnTrigger && !bgMusic.isPlaying)
