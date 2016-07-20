@@ -7,7 +7,7 @@ public class ScoutUserControl : MonoBehaviour
 {
     private ScoutController m_Character;
     private bool m_Jump;
-
+    [HideInInspector] public bool disableMovement = false;
 
     private void Awake()
     {
@@ -27,11 +27,16 @@ public class ScoutUserControl : MonoBehaviour
 
     private void FixedUpdate()
     {
+        Debug.Log("Disable movement: " + disableMovement.ToString());
         // Read the inputs.
         float h = CrossPlatformInputManager.GetAxis("Horizontal");
         float v = CrossPlatformInputManager.GetAxis("Vertical");
         // Pass all parameters to the character control script.
-        m_Character.Move(h, v, m_Jump);
+
+        if (disableMovement) // if movement is disabled, pass zeros/false to move (since some functionality still needs to occur in Move())
+            m_Character.Move(0, 0, false);
+        else
+            m_Character.Move(h, v, m_Jump);
         m_Jump = false;
     }
 }

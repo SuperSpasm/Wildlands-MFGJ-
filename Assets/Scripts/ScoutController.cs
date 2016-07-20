@@ -48,9 +48,11 @@ public class ScoutController : MonoBehaviour
     //// SWINGING
     //
     
-    [HideInInspector] public GameObject swingingOnThis;          // null if not swinging, otherwise has a reference to the object currently climbing on
+    //[HideInInspector]
+    public GameObject swingingOnThis;          // null if not swinging, otherwise has a reference to the object currently climbing on
     
-    [HideInInspector] public List<GameObject> availableForSwing; // will have a reference to swingable objects if you're in the vicinity of some. empty otherwise.
+    //[HideInInspector]
+    public List<GameObject> availableForSwing; // will have a reference to swingable objects if you're in the vicinity of some. empty otherwise.
     [SerializeField]  private float m_swingSpeed;
     
     [Tooltip("after jumping from a swingable object swinging on that object will be disabled for this short time")]
@@ -212,7 +214,6 @@ public class ScoutController : MonoBehaviour
     }
 
 
-
     private void Climb(float moveHor, float moveVer, bool jump)
     {
         Debug.Log("Climbing");
@@ -316,15 +317,15 @@ public class ScoutController : MonoBehaviour
     }
     private void StartSwinging(GameObject chosenVineLink)
     {
-        Debug.Log("StartSwinging() called");
+        //Debug.Log("StartSwinging() called");
         swingingOnThis = chosenVineLink;
-        transform.position = swingingOnThis.transform.position;
         // kill velocity
         m_Rigidbody2D.velocity = Vector2.zero;
 
         // add a joint to fix distance between the vine and the player
         swingJoint = gameObject.AddComponent<FixedJoint2D>(); // attach a joint to maintain distance from vine
         swingJoint.connectedBody = swingingOnThis.GetComponent<Rigidbody2D>();
+        swingJoint.dampingRatio = 1; // dampen the shit out of that movement
         swingJoint.autoConfigureConnectedAnchor = false; // USED TO SLIDE DOWN VINE, CURRENTLY NOT IN USE
         m_Grounded = false;
         m_Anim.SetBool("Swing", true);
@@ -340,7 +341,7 @@ public class ScoutController : MonoBehaviour
     }
     private void tempDisableSwing(GameObject wasSwingingOnThis)
     {
-        Debug.Log("tempDisableSwing() called");
+        //Debug.Log("tempDisableSwing() called");
         swingDisabled = true;
         disabledVineRoot = vineScript.vineRoot;
         swingDisableTime = disabledVineRoot.GetComponent<Vine>().swingDisableTime;

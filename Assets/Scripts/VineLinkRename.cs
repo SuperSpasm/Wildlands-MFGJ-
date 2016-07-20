@@ -10,61 +10,45 @@ public class VineLinkRename : MonoBehaviour {
     [ContextMenu("Rename VineLinks")]
     void renameLinks()
     {
-        getLinks();
+        getLinks(); // gets the links from last to first
         int n = m_listedLinks.Count;
         foreach(GameObject link in m_listedLinks)
         {
             Debug.Log(string.Format("renaming {0} to: {1} ({2:D3})", link.name, renameTo, n));
             link.name = string.Format("{0} ({1:D3})", renameTo, n);
+            link.transform.SetSiblingIndex(n - 1);
             n--;
+
         }
     }
     void getLinks()
     {
-        m_listedLinks = new List<GameObject>();
-        Rigidbody2D nextBody = lastLink.GetComponent<Rigidbody2D>();
+        m_listedLinks = new List<GameObject>(); // start with clean list
+
+        GameObject currLink;
+        Rigidbody2D nextBody = lastLink.GetComponent<Rigidbody2D>(); // start with the rigidbody2d of the last link
+
         do
         {
-            HingeJoint2D[] joints = GetComponents<HingeJoint2D>();
-            Debug.Log("Got joint[] items: ");
-            foreach (HingeJoint2D joint in joints)
-                Debug.Log("\t" + joint.ToString());
+            currLink = nextBody.gameObject; // get the gameobject & add to list
 
-            HingeJoint2D relevantJoint = null;
-            if (joints.Length == 0)
-                relevantJoint = null;
-            else if (joints.Length == 1)
-            { // if theres only one attached
-                relevantJoint = joints[0];
-            }
+            if (m_listedLinks.Contains(currLink))
+                throw new System.ArgumentException(string.Format("List already contains the gameObject {0}. something probably went wrong.", currLink.name));
             else
-            { // there's more than one hingejoint attached
-                foreach (HingeJoint2D joint in joints)
-                {
-                    if (joint.connectedBody)
-                    { // find the joint with the connected rigidbody
-                        if (relevantJoint) // throw an error if they both have rigidbodies attached
-                            throw new System.Exception(string.Format("Can't rename: {0} has two joints with bodies attached!"));
-                        else
-                            relevantJoint = joint;
-                    }
-                }
-            }
+                m_listedLinks.Add(currLink);
 
-            // at this point relativeJoint should be either the joint that contains the next connected rigidbody, or null.
+            nextBody = currLink.GetComponent<HingeJoint2D>().connectedBody; // get the conntected rigidbody2d (will be null on FIRST link)
+        } while (nextBody);
 
-            if (!relevantJoint)
-            {
-                nextBody = null;
-            }
-            else
-                nextBody = relevantJoint.connectedBody;
+        debugPrintList();
+    }
 
-            // at this point nextBody shoud either be the next body, or null.
-
-
-        } while (nextBody); // keep going until there are no more connected rigidbodies
-
-        Debug.Log("DONE WITH GETTING LINKS. Count: " + m_listedLinks.Count.ToString());
+    void debugPrintList()
+    {
+        Debug.Log("Listing the list: ");
+        foreach (GameObject link in m_listedLinks)
+        {
+            Debug.Log("\t" + link.name);
+        }
     }
 }
