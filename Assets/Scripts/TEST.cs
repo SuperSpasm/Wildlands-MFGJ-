@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class TEST : MonoBehaviour {
-    public enum Mode { Start, Update, FixedUpdate }
+    public enum Mode { Start, Update, FixedUpdate, ContextMenuOnly }
     public Mode whenToDoStuff;
 
     public enum StuffThisCanDo {outPutPosition, outPutColliderPos, findClosestVine, outPutTopBorder, outPutBottomBorder, outPutLeftBorder, outPutRightBorder }
@@ -10,6 +10,7 @@ public class TEST : MonoBehaviour {
 
     // Use this for initialization
 
+    [ContextMenu("Do Stuff")]
     void doStuff()
     {
         switch (whatToDo)

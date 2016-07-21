@@ -220,7 +220,6 @@ public class ScoutController : MonoBehaviour
 
         if (jump)
         {   // detach from tree, jump
-            //Debug.Log("climb->jump");
             StopClimbing();
             Jump();
         }
