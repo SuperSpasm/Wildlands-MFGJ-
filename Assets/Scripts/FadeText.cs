@@ -11,11 +11,13 @@ public class FadeText : MonoBehaviour {
 	private int iterator;
 	public string [] textstrings;
 	private Text text;
+	private GameObject gameController;
 
 	public void changeText()	//called at the end of fade out animation clip
 	{
 		if (iterator >= textstrings.Length) {
-							//this is temporary
+			text.text = "";
+			gameController.GetComponent<GameController> ().changeScene ();				//this is temporary
 			return;
 		}
 		text.text = "" + textstrings [iterator];
@@ -35,6 +37,7 @@ public class FadeText : MonoBehaviour {
 		fadeTextAnim = GetComponent<Animator> ();
 		textGroup = GetComponent<CanvasGroup> ();
 		text = GetComponent<Text> ();
+		gameController = GameObject.FindGameObjectWithTag ("GameController");
 		textGroup.alpha = 0.0f;
 		fade = true;
 		iterator = 0;
@@ -43,18 +46,19 @@ public class FadeText : MonoBehaviour {
 	}
 
 	void Update () {
-        if (Input.GetButtonUp("Submit"))
-            Debug.Log("submit let go");
-        if(Input.GetButtonUp ("Submit") || iterator == textstrings.Length){
-            fadeTextAnim.SetTrigger("finish");
-        }
-		else if (Input.GetButtonUp ("Jump") && !fade) {
+//        if (Input.GetButtonUp("Submit"))
+//            Debug.Log("submit let go");
+//        if(Input.GetButtonUp ("Submit") || iterator == textstrings.Length){
+//            fadeTextAnim.SetTrigger("finish");
+//        }
+//		else 
+			if (Input.GetButtonUp ("Jump") && !fade) {
 			playAnim ();
 		}
 	}
 
     public void loadNextLevel() {
-        SceneManager.LoadScene(2);
+		gameController.GetComponent<GameController> ().changeScene ();
     }
 
 }

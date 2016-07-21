@@ -23,7 +23,7 @@ public class StartOptions : MonoBehaviour {
 	private PlayMusic playMusic;										//Reference to PlayMusic script
 	private float fastFadeIn = .01f;									//Very short fade time (10 milliseconds) to start playing music immediately without a click/glitch
 	private ShowPanels showPanels;										//Reference to ShowPanels script on UI GameObject, to show and hide panels
-
+	private GameObject gameController;
 	
 	void Awake()
 	{
@@ -32,6 +32,7 @@ public class StartOptions : MonoBehaviour {
 
 		//Get a reference to PlayMusic attached to UI object
 		playMusic = GetComponent<PlayMusic> ();
+		gameController = GameObject.FindGameObjectWithTag ("GameController");
 	}
 
 
@@ -48,10 +49,10 @@ public class StartOptions : MonoBehaviour {
 		if (changeScenes) 
 		{
 			//Use invoke to delay calling of LoadDelayed by half the length of fadeColorAnimationClip
-			Invoke ("LoadDelayed", fadeColorAnimationClip.length * .5f);
-
+			//Invoke ("LoadDelayed", fadeColorAnimationClip.length * .5f);
+			LoadDelayed();
 			//Set the trigger of Animator animColorFade to start transition to the FadeToOpaque state.
-			animColorFade.SetTrigger ("fade");
+			//animColorFade.SetTrigger ("fade");
 		} 
 
 		//If changeScenes is false, call StartGameInScene
@@ -83,7 +84,8 @@ public class StartOptions : MonoBehaviour {
 		showPanels.HideMenu ();
 
 		//Load the selected scene, by scene index number in build settings
-		SceneManager.LoadScene (sceneToStart);
+		//SceneManager.LoadScene (sceneToStart);
+		gameController.GetComponent<GameController>().changeScene();
 	}
 
 	public void HideDelayed()

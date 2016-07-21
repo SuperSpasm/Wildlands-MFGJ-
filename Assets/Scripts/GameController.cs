@@ -2,28 +2,13 @@
 using UnityEngine.SceneManagement;
 using System.Collections;
 
-public class GameManager{
+public class GameController : MonoBehaviour {
 
-	private static GameManager instance = new GameManager ();
-	private const int totalScenes = 4;
+
 	private Vector2 checkpoint;
 
-	private GameManager()
-	{
-		
-	}
-
-	public static GameManager Instance
-	{
-		get
-		{
-			if(instance == null)
-			{
-				instance = new GameManager();
-			}
-			return instance;
-		}
-	}
+	public int totalScenes;
+	public AnimationClip fadeColorAnimationClip;
 
 	public void setCheckpoint (float x, float y)
 	{
@@ -42,11 +27,25 @@ public class GameManager{
 		return getCheckpoint ();
 	}
 
-	public void openScene(int sceneNum)
+	private void openScene(int sceneNum)
 	{
 		if (sceneNum >= totalScenes)
 			sceneNum = 0;
 		SceneManager.LoadScene (sceneNum);
-		
+
 	}
+
+	private void loadDelayed()
+	{
+		
+		openScene (SceneManager.GetActiveScene ().buildIndex + 1);
+	}
+
+	public void changeScene()
+	{
+		this.GetComponentInChildren<Animator> ().SetTrigger ("fade");
+		Invoke("loadDelayed",fadeColorAnimationClip.length * 0.5f);
+	}
+
+
 }
