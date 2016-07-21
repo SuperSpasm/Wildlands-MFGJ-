@@ -330,7 +330,7 @@ public class ScoutController : MonoBehaviour
         m_Anim.SetBool("Swing", true);
         vineScript = swingingOnThis.GetComponent<VineLink>();
     }
-    private void StopSwinging()
+    public void StopSwinging()
     {
         Destroy(swingJoint);
         m_Anim.SetBool("Swing", false);

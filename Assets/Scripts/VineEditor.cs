@@ -20,6 +20,9 @@ public class VineEditor : MonoBehaviour {
     public PositionMode positionMode;
     public ScaleMode    scaleMode;
     public RotationMode rotationMode;
+
+    [Header("Releasing holding Joint")]
+    public GameObject releaseTrigger;
     
     
     [ContextMenu("Rename VineLinks")]
@@ -114,5 +117,17 @@ public class VineEditor : MonoBehaviour {
         }
     }
 
+    [ContextMenu("Release joint")]
+    void ReleaseJoint()
+    {
+        var script = releaseTrigger.GetComponent<BigVineTrigger>();
+        script.DisableJoint();
+    }
+    [ContextMenu("Reset joint")]
+    void ResetJoint()
+    {
+        var script = releaseTrigger.GetComponent<BigVineTrigger>();
+        script.EnableJoint();
+    }
 
 }
