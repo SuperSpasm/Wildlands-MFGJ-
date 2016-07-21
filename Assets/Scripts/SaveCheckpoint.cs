@@ -8,13 +8,14 @@ public class SaveCheckpoint : MonoBehaviour {
 
 	void Awake () {
 		scout = GameObject.FindGameObjectWithTag ("Player");
-		gameController = GameObject.FindGameObjectWithTag ("GameController");
+//		gameController = GameObject.FindGameObjectWithTag ("GameController");
 	}
 
 	void OnTriggerEnter2D (Collider2D otherCollider) {
 		if (otherCollider.gameObject == scout) {
-			gameController.GetComponent<GameController> ().setCheckpoint (scout.transform.position.x, scout.transform.position.y);
-	
+//			gameController.GetComponent<GameController> ().setCheckpoint (scout.transform.position.x, scout.transform.position.y);
+			GameController.gcInstance.setCheckpoint (this.transform.position.x, this.transform.position.y);
+
 		}
 	}
 }
