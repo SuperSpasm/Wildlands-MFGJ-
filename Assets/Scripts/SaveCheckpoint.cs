@@ -3,6 +3,7 @@ using System.Collections;
 
 public class SaveCheckpoint : MonoBehaviour {
 
+    public Transform respawnLocation;
 	private GameObject scout;
 	private GameObject gameController;
 
@@ -13,7 +14,7 @@ public class SaveCheckpoint : MonoBehaviour {
 
 	void OnTriggerEnter2D (Collider2D otherCollider) {
 		if (otherCollider.gameObject == scout) {
-			gameController.GetComponent<GameController> ().setCheckpoint (scout.transform.position.x, scout.transform.position.y);
+			gameController.GetComponent<GameController> ().setCheckpoint (respawnLocation.position.x, respawnLocation.position.y);
 	
 		}
 	}
