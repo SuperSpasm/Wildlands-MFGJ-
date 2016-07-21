@@ -6,18 +6,22 @@ public class Death : MonoBehaviour {
 
 	private GameObject scout;
 	private Vector2 checkpoint;
+	private GameObject gameController;
+	private GameController gameManager;
 
 
 	void Awake()
 	{
 		scout = GameObject.FindGameObjectWithTag ("Player");
+		gameController = GameObject.FindGameObjectWithTag ("GameController");
+		gameManager = gameController.GetComponent<GameController> ();
 	}
 
 	void OnTriggerEnter2D ( Collider2D otherCollider)
 	{
 		if (otherCollider.gameObject.GetHashCode() == scout.GetHashCode()) {
-			checkpoint = GameManager.Instance.getCheckpoint ();
-			GameManager.Instance.respawn ();
+			checkpoint = gameManager.getCheckpoint ();
+			gameManager.respawn ();
 			scout.transform.Translate (checkpoint.x, checkpoint.y, 0.0f);
 
 		}
