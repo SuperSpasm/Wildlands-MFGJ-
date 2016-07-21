@@ -13,22 +13,15 @@ public class PlayMusic : MonoBehaviour {
 
 
 	private AudioSource musicSource;				//Reference to the AudioSource which plays music
-	private float resetTime = .01f;					//Very short time used to fade in near instantly without a click
+	private float resetTime = 3;					//Very short time used to fade in near instantly without a click
 
 
 	void Awake () 
 	{
 		//Get a component reference to the AudioSource attached to the UI game object
-		musicSource = GetComponent<AudioSource> ();
+		    musicSource = GetComponent<AudioSource> ();
 		//Call the PlayLevelMusic function to start playing music
 	}
-
-    void Start()
-    {
-        // if starting in the 2nd scene (testing), start with mixer turned all the way down
-        if (SceneManager.GetActiveScene().buildIndex == 2)
-            volumeDown.TransitionTo(0);
-    }
 
 
 	public void PlayLevelMusic()

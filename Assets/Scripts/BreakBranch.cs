@@ -16,7 +16,7 @@ public class BreakBranch : MonoBehaviour {
 		elapsedTime += Time.deltaTime;
 		if (elapsedTime >= timeToFall) {
 			rb.gravityScale = 1.0f;
-			rb.isKinematic = false;
+			rb.isKinematic = false; 
 			this.enabled = false;
 			return;
 		}
