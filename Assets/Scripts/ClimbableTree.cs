@@ -6,7 +6,7 @@ public class ClimbableTree : MonoBehaviour {
     // A script for a tree that's climbable.
     // the basic script for climbable GameObjects
     
-    public GameObject player;
+    private GameObject player;
     private ScoutController playerController;
     [Tooltip("you can speed up or slow down the players climbing speed with this. 1 = default speed")]
     public float climbEase;
@@ -30,7 +30,7 @@ public class ClimbableTree : MonoBehaviour {
     {
         // set up references
         if (!player)
-            player = GameObject.FindGameObjectWithTag("Player");
+            player = GameObject.FindGameObjectWithTag("player_tag");
         //Debug.Log("Player = " + player.name);
 
         playerController = player.GetComponent<ScoutController>();

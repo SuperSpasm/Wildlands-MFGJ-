@@ -8,7 +8,7 @@ namespace UnityStandardAssets._2D
     {
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (other.tag == "Player")
+            if (other.tag == "player_tag")
             {
                 SceneManager.LoadScene(SceneManager.GetSceneAt(0).name);
             }

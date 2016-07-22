@@ -46,13 +46,15 @@ public class FadeText : MonoBehaviour {
 	}
 
 	void Update () {
-        if (Input.GetButtonUp("Submit"))
-			gameController.GetComponent<GameController> ().changeScene ();
-//        if(Input.GetButtonUp ("Submit") || iterator == textstrings.Length){
-//            fadeTextAnim.SetTrigger("finish");
-//        }
-//		else 
-			if (Input.GetButtonUp ("Jump") && !fade) {
+
+        // if user presses "enter" - cue the FadeToNextLevel animation
+        // the animation then fades music, text and calls loadNextLevel() when its done
+        if (Input.GetButtonUp("Submit") || iterator == textstrings.Length)
+        {
+            fadeTextAnim.SetTrigger("finish");
+        }
+        else
+            if (Input.GetButtonUp ("Jump") && !fade) {
 			playAnim ();
 		}
 	}

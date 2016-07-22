@@ -11,7 +11,7 @@ public class BreakBranchController : MonoBehaviour {
 	}
 	void OnTriggerEnter2D (Collider2D otherCollider)
 	{
-		if (otherCollider.tag == "Player") {
+		if (otherCollider.tag == "player_tag") {
 			breakScript.enabled = true;
 			this.enabled = false;
 			return;

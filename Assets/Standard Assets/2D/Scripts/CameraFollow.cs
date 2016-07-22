@@ -19,7 +19,7 @@ namespace UnityStandardAssets._2D
         private void Awake()
         {
             // Setting up the reference.
-            m_Player = GameObject.FindGameObjectWithTag("Player").transform;
+            m_Player = GameObject.FindGameObjectWithTag("player_tag").transform;
         }
 
 

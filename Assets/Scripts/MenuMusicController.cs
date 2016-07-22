@@ -97,7 +97,7 @@ public class MenuMusicController : MonoBehaviour {
     void OnTriggerEnter2D (Collider2D otherCollider)
     {
 
-        if (fadeVolOnTrigger && otherCollider.tag == "Player" && !triggered)
+        if (fadeVolOnTrigger && otherCollider.tag == "player_tag" && !triggered)
         {
             triggered = true;
             if (!bgMusic.isPlaying)

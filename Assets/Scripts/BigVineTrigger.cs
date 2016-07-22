@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class BigVineTrigger : MonoBehaviour {
 
@@ -8,8 +9,9 @@ public class BigVineTrigger : MonoBehaviour {
     public AreaEffector2D effector;
     public GameObject bigVine;
     public Collider2D colliderToEnable;
-
-    public enum WhatToDo {DisableUserControl, EnableUserConrol, EnableEffector, DisableEffector, DetachVine, DetachPlayer, EnableCollider }
+    public GameObject mainCamera;
+    public float zoomSpeed = 1.0f;
+    public enum WhatToDo {DisableUserControl, EnableUserConrol, EnableEffector, DisableEffector, DetachVine, DetachPlayer, EnableCollider, ZoomOut, ZoomIn }
     public WhatToDo whatToDo;
 
     private ScoutController scoutControl;
@@ -61,21 +63,34 @@ public class BigVineTrigger : MonoBehaviour {
                     releaseJoint.enabled = false;
                     break;
                 case WhatToDo.DetachPlayer:
-                    scoutControl.StopSwinging();                                    // detach player from vine
-                    foreach (Transform vineNode in bigVine.transform)
-                    {
-                        if (vineNode.GetComponent<Collider2D>())
-                            vineNode.GetComponent<Collider2D>().enabled = false;    // disable node triggers so theres no way player will re-attach
-                    }
-                    scoutControl.availableForSwing = new System.Collections.Generic.List<GameObject>(); // reset available for swing list to avoid buggy behaviour
+                    DoDetachPlayer();
                     break;
                 case WhatToDo.EnableCollider:
                     colliderToEnable.enabled = true;
+                    break;
+                case WhatToDo.ZoomIn:
+                    mainCamera.GetComponent<Animator>().SetFloat("zoomSpeed", zoomSpeed);
+                    mainCamera.GetComponent<Animator>().SetBool("zoomedOut", false);
+                    break;
+                case WhatToDo.ZoomOut:
+                    mainCamera.GetComponent<Animator>().SetFloat("zoomSpeed", zoomSpeed);
+                    mainCamera.GetComponent<Animator>().SetBool("zoomedOut", true);
                     break;
             }
             triggered = true;
         }
         //else if (!triggered)
         //    Debug.Log(string.Format("{0} entered trigger, doesn't match expected {1}. mode: {2}", otherCollider.name, triggeringObject.name, whatToDo.ToString()));
+    }
+
+    private void DoDetachPlayer()
+    {
+        scoutControl.StopSwinging();                                    // detach player from vine
+        foreach (Transform vineNode in bigVine.transform)
+        {
+            if (vineNode.GetComponent<Collider2D>())
+                vineNode.GetComponent<Collider2D>().enabled = false;    // disable node triggers so theres no way player will re-attach
+        }
+        scoutControl.availableForSwing = new System.Collections.Generic.List<GameObject>(); // reset available for swing list to avoid buggy behaviour
     }
 }

@@ -21,7 +21,7 @@ public class VineLink : MonoBehaviour
     {
         // set up references
         if (!player)
-            player = GameObject.FindGameObjectWithTag("Player");
+            player = GameObject.FindGameObjectWithTag("player_tag");
 
         if (!playerController)
             playerController = player.GetComponent<ScoutController>();
@@ -43,7 +43,7 @@ public class VineLink : MonoBehaviour
     void OnTriggerEnter2D(Collider2D otherCollider)
     {
         // only react to the player
-        if (otherCollider.tag == "Player")
+        if (otherCollider.tag == "player_tag")
         {
             //Debug.Log("entered swing trigger");
             SetRefs(otherCollider.gameObject);
@@ -68,7 +68,7 @@ public class VineLink : MonoBehaviour
     void OnTriggerExit2D(Collider2D otherCollider)
     {
         // only react to the player
-        if (otherCollider.gameObject.tag == "Player")
+        if (otherCollider.gameObject.tag == "player_tag")
         {
             // see which part of the player exited the trigger 
             if (otherCollider.GetType() == typeof(BoxCollider2D))
