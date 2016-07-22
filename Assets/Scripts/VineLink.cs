@@ -95,7 +95,7 @@ public class VineLink : MonoBehaviour
             if(!playerController.availableForSwing.Contains(gameObject))
                 playerController.availableForSwing.Add(gameObject);
         }
-        if (!feetIn && !bodyIn)
+        if (!bodyIn)
         { // both the player's feet and body are out of the trigger area
 
             // if this is available for climb for the player

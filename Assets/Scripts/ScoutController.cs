@@ -67,7 +67,8 @@ public class ScoutController : MonoBehaviour
     private VineLink vineScript;
 
 
-    private bool swingDisabled;
+    private enum SwingDisableStatus { enabled, waitingForGroud, Disabled };
+    private SwingDisableStatus swingDisabled = SwingDisableStatus.enabled;
     private float swingDisableCounter = 0;
     private GameObject disabledVineRoot;
 
@@ -95,7 +96,7 @@ public class ScoutController : MonoBehaviour
     private void FixedUpdate()
     {
         GroundCheck();
-        // Set the vertical animation
+        // Set the vertical, horizontal speeds for animation
         m_Anim.SetFloat("vSpeed", m_Rigidbody2D.velocity.y);
         m_Anim.SetFloat("hSpeed", m_Rigidbody2D.velocity.x);
     }
@@ -138,11 +139,14 @@ public class ScoutController : MonoBehaviour
             climbDisableCounter += Time.deltaTime;
         }
 
-        if (swingDisabled)
+        if (swingDisabled == SwingDisableStatus.waitingForGroud && m_Anim.GetBool("Ground"))
+            swingDisabled = SwingDisableStatus.Disabled;
+
+        if (swingDisabled == SwingDisableStatus.Disabled) // if swing disabled and have been grounded
         { // keep track of whether swing is enabled
             if (swingDisableCounter >= swingDisableTime)
             {
-                swingDisabled = false;
+                swingDisabled = SwingDisableStatus.enabled;
                 swingDisableCounter = 0;
                 disabledVineRoot = null;
             }
@@ -333,7 +337,7 @@ public class ScoutController : MonoBehaviour
     private void tempDisableSwing(GameObject wasSwingingOnThis)
     {
         //Debug.Log("tempDisableSwing() called");
-        swingDisabled = true;
+        swingDisabled = SwingDisableStatus.waitingForGroud; // wait until the player touches the ground, then start counting the disable time
         disabledVineRoot = vineScript.vineRoot;
         swingDisableTime = disabledVineRoot.GetComponent<Vine>().swingDisableTime;
         swingDisableCounter = 0;
@@ -353,9 +357,11 @@ public class ScoutController : MonoBehaviour
                 if (link.GetComponent<VineLink>().vineRoot != disabledVineRoot)
                     relevantLinks.Add(link);
 
+        if (relevantLinks.Count == 0)
+            return null;
 
         if (moveVer > 0 || jump) // if the player pressed up or space, simply return the first link in the list
-            return relevantLinks[0];
+                return relevantLinks[0];
 
         // if there are objects available for swing and the player didn't press, check if auto attach is enabled
         if (vineAutoAttach)
