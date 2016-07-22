@@ -97,16 +97,7 @@ public class ScoutController : MonoBehaviour
         GroundCheck();
         // Set the vertical animation
         m_Anim.SetFloat("vSpeed", m_Rigidbody2D.velocity.y);
-
-        ////debugging
-        //if (availableForClimb)
-        //    Debug.Log("Available for climb: " + availableForClimb);
-        //else
-        //    Debug.Log("Available for climb: " + "NONE");
-        //if (climbingOnThis)
-        //    Debug.Log("climbing on: " + climbingOnThis);
-        //else
-        //    Debug.Log("climbing on: " + "NONE");
+        m_Anim.SetFloat("hSpeed", m_Rigidbody2D.velocity.x);
     }
 
     public void GroundCheck()
