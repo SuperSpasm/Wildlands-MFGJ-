@@ -111,7 +111,7 @@ public class MenuMusicController : MonoBehaviour {
     public void fadeInMusic()
     {
         float currVol;
-        mainMixer.GetFloat("masterVol", out currVol);
+        mainMixer.GetFloat("musicTopVol", out currVol);
         if (currVol > targetVolume) // if the volume is already higher than the target, do nothing
             return;
 
@@ -120,10 +120,10 @@ public class MenuMusicController : MonoBehaviour {
         counter = fadeTime;
 
         //get deltaVol (current volume - target)
-        mainMixer.GetFloat("masterVol", out currVol);
+        mainMixer.GetFloat("musicTopVol", out currVol);
         deltaVolume = Mathf.Abs((currVol - targetVolume) / fadeTime);
 
-        mainMixer.GetFloat("masterVol", out currVol);
+        mainMixer.GetFloat("musicTopVol", out currVol);
 
 
     }
@@ -132,10 +132,10 @@ public class MenuMusicController : MonoBehaviour {
         instance = gameObject; // set this as the active instance;
 
         float currVol;
-        mainMixer.GetFloat("masterVol", out currVol);
+        mainMixer.GetFloat("musicTopVol", out currVol);
 
         //get deltaVol (current volume - target)
-        mainMixer.GetFloat("masterVol", out currVol);
+        mainMixer.GetFloat("musicTopVol", out currVol);
         deltaVolume = Mathf.Abs((currVol - targetVolume) / fadeTime);
 
 
@@ -158,12 +158,12 @@ public class MenuMusicController : MonoBehaviour {
         if (vol < -80 || vol > 0)
             throw new System.ArgumentOutOfRangeException("volume must be a float between 0 and -80!");
         else
-            mainMixer.SetFloat("masterVol", vol);
+            mainMixer.SetFloat("musicTopVol", vol);
     }
     private void AddVolume(float volToAdd)
     {
         float currVol;
-        mainMixer.GetFloat("masterVol", out currVol);
-        mainMixer.SetFloat("masterVol", currVol + volToAdd);
+        mainMixer.GetFloat("musicTopVol", out currVol);
+        mainMixer.SetFloat("musicTopVol", currVol + volToAdd);
     }
 }
