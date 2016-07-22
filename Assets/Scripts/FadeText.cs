@@ -17,7 +17,7 @@ public class FadeText : MonoBehaviour {
 	{
 		if (iterator >= textstrings.Length) {
 			text.text = "";
-			gameController.GetComponent<GameController> ().changeScene ();				//this is temporary
+			gameController.GetComponent<GameController> ().changeScene ();				
 			return;
 		}
 		text.text = "" + textstrings [iterator];
@@ -46,8 +46,8 @@ public class FadeText : MonoBehaviour {
 	}
 
 	void Update () {
-//        if (Input.GetButtonUp("Submit"))
-//            Debug.Log("submit let go");
+        if (Input.GetButtonUp("Submit"))
+			gameController.GetComponent<GameController> ().changeScene ();
 //        if(Input.GetButtonUp ("Submit") || iterator == textstrings.Length){
 //            fadeTextAnim.SetTrigger("finish");
 //        }
