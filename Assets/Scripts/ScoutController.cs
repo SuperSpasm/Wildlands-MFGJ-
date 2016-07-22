@@ -74,6 +74,7 @@ public class ScoutController : MonoBehaviour
     private float swingDisableCounter = 0;
     private GameObject disabledVineRoot;
 
+	private SoundFXController sfxCtr;
     //
     //
     ////
@@ -92,6 +93,7 @@ public class ScoutController : MonoBehaviour
         m_gravityScaleDefault = m_Rigidbody2D.gravityScale;
 
         availableForSwing = new List<GameObject>();
+		sfxCtr = GetComponent<SoundFXController> ();
     }
 
 
@@ -437,5 +439,9 @@ public class ScoutController : MonoBehaviour
         return m_CeilingCheck;
     }
 
+	public void playClip(int index)
+	{
+		sfxCtr.playFX (index);
+	}
 }
 
