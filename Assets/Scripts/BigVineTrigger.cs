@@ -3,7 +3,7 @@ using System.Collections;
 
 public class BigVineTrigger : MonoBehaviour {
 
-    public GameObject triggeringObject;
+    public GameObject scout;
     public Joint2D releaseJoint;
     public AreaEffector2D effector;
     public GameObject bigVine;
@@ -19,7 +19,6 @@ public class BigVineTrigger : MonoBehaviour {
 
     void Awake()
     {
-        GameObject scout = GameObject.FindGameObjectWithTag("Player");
         scoutControl= scout.GetComponent<ScoutController>();
         scoutUserControl = scout.GetComponent<ScoutUserControl>();
         triggered = false;
@@ -40,7 +39,7 @@ public class BigVineTrigger : MonoBehaviour {
     void OnTriggerEnter2D(Collider2D otherCollider)
     {
         //Debug.Log(string.Format("trigger entered. gameObject: {0}, collider tag: {1}, object tag: {2}", otherCollider.gameObject.name, otherCollider.tag, otherCollider.gameObject.tag));
-        if (otherCollider.gameObject.GetInstanceID() == triggeringObject.GetInstanceID() && !triggered)
+        if (otherCollider.gameObject.GetInstanceID() == scout.GetInstanceID() && !triggered)
         {
             //Debug.Log(string.Format("{0} entered trigger! will perform desired action. mode: {1}", otherCollider.name, whatToDo.ToString()));
             switch (whatToDo)

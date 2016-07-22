@@ -63,7 +63,9 @@ public class ScoutController : MonoBehaviour
     // Might be too much work to finish this, since id have to implement a better way to find the closest vine (started on that using raycasting)
     // and since i just lower swingJoint to slide down, id have to handle situations when i hit the ground. probably would be easier to design levels such that you dont need this.
 
-    FixedJoint2D swingJoint;                                    // joint to be added to the player  attached to the vine while swinging
+    [SerializeField] private Vector2 swingPositionOffset;
+    [SerializeField] private Vector2 swingRotationOffset;
+    HingeJoint2D swingJoint;                                    // joint to be added to the player  attached to the vine while swinging
     private VineLink vineScript;
 
 
@@ -283,6 +285,10 @@ public class ScoutController : MonoBehaviour
         }
         else
         {
+            // set rotation to vine node connected to and then add offset
+            transform.rotation = swingingOnThis.transform.rotation;
+            transform.Rotate(swingRotationOffset);
+
             float speedMultiplier = m_swingSpeed * vineScript.swingEase;
             Vector2 userInput = new Vector2(moveHor, 0);
 
@@ -311,16 +317,23 @@ public class ScoutController : MonoBehaviour
     }
     private void StartSwinging(GameObject chosenVineLink)
     {
-        //Debug.Log("StartSwinging() called");
+        Debug.Log("StartSwinging() called");
         swingingOnThis = chosenVineLink;
-        // kill velocity
-        m_Rigidbody2D.velocity = Vector2.zero;
+        
+        m_Rigidbody2D.velocity = Vector2.zero;                                  // kill velocity
+
+        // if facing right, subtract the x offset as opposed to adding it, so player is in front of vine (assumes offset has positive X)
+        Vector2 posOffset = (m_FacingRight) ? new Vector2(-swingPositionOffset.x, swingPositionOffset.y) : swingPositionOffset;
+        transform.position = chosenVineLink.transform.position + (Vector3)posOffset;
+
+        transform.rotation = chosenVineLink.transform.rotation;                 // set player rotation to vine
+        transform.Rotate(swingRotationOffset);                                  // rotate more by offset
 
         // add a joint to fix distance between the vine and the player
-        swingJoint = gameObject.AddComponent<FixedJoint2D>(); // attach a joint to maintain distance from vine
+        swingJoint = gameObject.AddComponent<HingeJoint2D>();                   // attach a joint to maintain distance from vine
         swingJoint.connectedBody = swingingOnThis.GetComponent<Rigidbody2D>();
-        swingJoint.dampingRatio = 1; // dampen the shit out of that movement
-        swingJoint.autoConfigureConnectedAnchor = false; // USED TO SLIDE DOWN VINE, CURRENTLY NOT IN USE
+        //swingJoint.dampingRatio = 1;                                            // dampen the shit out of that movement
+        swingJoint.autoConfigureConnectedAnchor = false;                        // USED TO SLIDE DOWN VINE, CURRENTLY NOT IN USE
         m_Grounded = false;
         m_Anim.SetBool("Swing", true);
         vineScript = swingingOnThis.GetComponent<VineLink>();
@@ -330,6 +343,9 @@ public class ScoutController : MonoBehaviour
         Debug.Log("StopSwinging() called");
         Destroy(swingJoint);
         m_Anim.SetBool("Swing", false);
+
+        transform.rotation = Quaternion.identity; // reset rotation
+
         tempDisableSwing(swingingOnThis);
         swingingOnThis = null;
         vineScript = null;

@@ -3,7 +3,6 @@ using System.Collections;
 
 public class VineLink : MonoBehaviour
 {
-    public GameObject player;
     private ScoutController playerController;
     public float swingEase;
 
@@ -13,15 +12,19 @@ public class VineLink : MonoBehaviour
     private bool bodyIn = false; // has the body (box collider) of the player entered the trigger?
     private bool feetIn = false; // have the feet (circle collider) of the player entered the trigger?
 
-
     void Awake()
+    {
+        vineRoot = transform.parent.gameObject;
+    }
+
+    void SetRefs(GameObject player)
     {
         // set up references
         if (!player)
             player = GameObject.FindGameObjectWithTag("Player");
 
-        playerController = player.GetComponent<ScoutController>();
-        vineRoot = transform.parent.gameObject;
+        if (!playerController)
+            playerController = player.GetComponent<ScoutController>();
     }
 
     void Start()
@@ -31,8 +34,8 @@ public class VineLink : MonoBehaviour
         if (body)
         {
             VineLink linkedToThis = body.GetComponent<VineLink>();
-            if (linkedToThis.isLastLink)
-                throw new VineError(string.Format("{0} is marked as last link, but {1} is connected to it!", linkedToThis.gameObject.name, gameObject.name));
+            //if (linkedToThis.isLastLink)
+            //    throw new VineError(string.Format("{0} is marked as last link, but {1} is connected to it!", linkedToThis.gameObject.name, gameObject.name));
         }
         
     }
@@ -40,10 +43,10 @@ public class VineLink : MonoBehaviour
     void OnTriggerEnter2D(Collider2D otherCollider)
     {
         // only react to the player
-        if (otherCollider.gameObject == player)
+        if (otherCollider.tag == "Player")
         {
             //Debug.Log("entered swing trigger");
-
+            SetRefs(otherCollider.gameObject);
             // see which part of the player entered the trigger 
             if (otherCollider.GetType() == typeof(BoxCollider2D))
             {
@@ -65,7 +68,7 @@ public class VineLink : MonoBehaviour
     void OnTriggerExit2D(Collider2D otherCollider)
     {
         // only react to the player
-        if (otherCollider.gameObject == player)
+        if (otherCollider.gameObject.tag == "Player")
         {
             // see which part of the player exited the trigger 
             if (otherCollider.GetType() == typeof(BoxCollider2D))

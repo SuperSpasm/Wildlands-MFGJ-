@@ -11,7 +11,7 @@ public class BreakBranchController : MonoBehaviour {
 	}
 	void OnTriggerEnter2D (Collider2D otherCollider)
 	{
-		if (otherCollider.gameObject == GameObject.FindGameObjectWithTag("Player")) {
+		if (otherCollider.tag == "Player") {
 			breakScript.enabled = true;
 			this.enabled = false;
 			return;
