@@ -27,7 +27,7 @@ public class ScoutUserControl : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Debug.Log("Disable movement: " + disableMovement.ToString());
+        //Debug.Log("Disable movement: " + disableMovement.ToString());
         // Read the inputs.
         float h = CrossPlatformInputManager.GetAxis("Horizontal");
         float v = CrossPlatformInputManager.GetAxis("Vertical");

@@ -110,25 +110,22 @@ public class MenuMusicController : MonoBehaviour {
 
     public void fadeInMusic()
     {
-
-        instance = gameObject; // set this as the active instance;
-
         float currVol;
         mainMixer.GetFloat("masterVol", out currVol);
+        if (currVol > targetVolume) // if the volume is already higher than the target, do nothing
+            return;
+
+        instance = gameObject; // set this as the active instance;
+        fadeStatus = FadeStatus.FadingIn;
+        counter = fadeTime;
 
         //get deltaVol (current volume - target)
         mainMixer.GetFloat("masterVol", out currVol);
         deltaVolume = Mathf.Abs((currVol - targetVolume) / fadeTime);
 
         mainMixer.GetFloat("masterVol", out currVol);
-        if (currVol > targetVolume)
-            throw new System.ArgumentException(string.Format("Trying to fade in but current volume ({0}) is higher than target volume! ({1})", currVol, targetVolume));
 
-        else
-        {
-            fadeStatus = FadeStatus.FadingIn;
-            counter = fadeTime;
-        }
+
     }
     public void fadeOutMusic()
     {

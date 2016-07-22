@@ -6,8 +6,10 @@ public class BigVineTrigger : MonoBehaviour {
     public GameObject triggeringObject;
     public Joint2D releaseJoint;
     public AreaEffector2D effector;
+    public GameObject bigVine;
+    public Collider2D colliderToEnable;
 
-    public enum WhatToDo {DisableUserControl, EnableUserConrol, EnableEffector, DisableEffector, DetachVine, DetachPlayer }
+    public enum WhatToDo {DisableUserControl, EnableUserConrol, EnableEffector, DisableEffector, DetachVine, DetachPlayer, EnableCollider }
     public WhatToDo whatToDo;
 
     private ScoutController scoutControl;
@@ -38,9 +40,9 @@ public class BigVineTrigger : MonoBehaviour {
     void OnTriggerEnter2D(Collider2D otherCollider)
     {
         //Debug.Log(string.Format("trigger entered. gameObject: {0}, collider tag: {1}, object tag: {2}", otherCollider.gameObject.name, otherCollider.tag, otherCollider.gameObject.tag));
-        if (otherCollider.gameObject.GetHashCode() == triggeringObject.GetHashCode() && !triggered)
+        if (otherCollider.gameObject.GetInstanceID() == triggeringObject.GetInstanceID() && !triggered)
         {
-            Debug.Log(string.Format("{0} entered trigger! will perform desired action. mode: {1}", otherCollider.name, whatToDo.ToString()));
+            //Debug.Log(string.Format("{0} entered trigger! will perform desired action. mode: {1}", otherCollider.name, whatToDo.ToString()));
             switch (whatToDo)
             {
                 case WhatToDo.DisableUserControl:
@@ -51,6 +53,7 @@ public class BigVineTrigger : MonoBehaviour {
                     break;
                 case WhatToDo.EnableEffector:
                     effector.enabled = true;
+
                     break;
                 case WhatToDo.DisableEffector:
                     effector.enabled = false;
@@ -59,12 +62,21 @@ public class BigVineTrigger : MonoBehaviour {
                     releaseJoint.enabled = false;
                     break;
                 case WhatToDo.DetachPlayer:
-                    scoutControl.StopSwinging();
+                    scoutControl.StopSwinging();                                    // detach player from vine
+                    foreach (Transform vineNode in bigVine.transform)
+                    {
+                        if (vineNode.GetComponent<Collider2D>())
+                            vineNode.GetComponent<Collider2D>().enabled = false;    // disable node triggers so theres no way player will re-attach
+                    }
+                    scoutControl.availableForSwing = new System.Collections.Generic.List<GameObject>(); // reset available for swing list to avoid buggy behaviour
+                    break;
+                case WhatToDo.EnableCollider:
+                    colliderToEnable.enabled = true;
                     break;
             }
             triggered = true;
         }
-        else if (!triggered)
-            Debug.Log(string.Format("{0} entered trigger, doesn't match expected {1}. mode: {2}", otherCollider.name, triggeringObject.name, whatToDo.ToString()));
+        //else if (!triggered)
+        //    Debug.Log(string.Format("{0} entered trigger, doesn't match expected {1}. mode: {2}", otherCollider.name, triggeringObject.name, whatToDo.ToString()));
     }
 }

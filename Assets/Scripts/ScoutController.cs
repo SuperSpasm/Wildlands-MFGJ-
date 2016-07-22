@@ -332,6 +332,7 @@ public class ScoutController : MonoBehaviour
     }
     public void StopSwinging()
     {
+        Debug.Log("StopSwinging() called");
         Destroy(swingJoint);
         m_Anim.SetBool("Swing", false);
         tempDisableSwing(swingingOnThis);

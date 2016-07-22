@@ -90,7 +90,7 @@ public class VineLink : MonoBehaviour
         //       is handled in the Move() method in the player controller.
         
         //Debug.Log("feet in? " + feetIn.ToString() + " body in? " + bodyIn.ToString() + "in list? " + playerController.availableForSwing.Contains(gameObject).ToString());
-        if (feetIn || bodyIn)
+        if (bodyIn)
         { // if player is at least partially in the trigger, make sure this is available to swing on
             if(!playerController.availableForSwing.Contains(gameObject))
                 playerController.availableForSwing.Add(gameObject);
