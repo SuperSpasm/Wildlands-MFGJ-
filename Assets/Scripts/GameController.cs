@@ -21,15 +21,15 @@ public class GameController : MonoBehaviour {
 		else
 			Destroy (this.gameObject);			//if gameobject is already present destroy duplicate gameobject
 	}
-
-	void OnLevelWasLoaded()
-	{
-		if (isRespawning) {
-			GameObject scout = GameObject.FindGameObjectWithTag ("Player");					//get referece of player in current scene
-			scout.transform.position = new Vector3 (checkpoint.x, checkpoint.y, 0.0f);		//set position to checkpoint
-			isRespawning = false;
-		}
-	}
+//
+//	void OnLevelWasLoaded()
+//	{
+//		if (isRespawning) {
+//			GameObject scout = GameObject.FindGameObjectWithTag ("Player");					//get referece of player in current scene
+//			scout.transform.position = new Vector3 (checkpoint.x, checkpoint.y, 0.0f);		//set position to checkpoint
+//			isRespawning = false;
+//		}
+//	}
 
 	public void setCheckpoint (float x, float y)
 	{
@@ -44,8 +44,10 @@ public class GameController : MonoBehaviour {
 
 	public void respawn()
 	{
-		isRespawning = true;
-		openScene (SceneManager.GetActiveScene().buildIndex);
+//		isRespawning = true;
+//		openScene (SceneManager.GetActiveScene().buildIndex);
+		GameObject scout = GameObject.FindGameObjectWithTag ("Player");					//get referece of player in current scene
+		scout.transform.position = new Vector3 (checkpoint.x, checkpoint.y, 0.0f);		//set position to checkpoint
 
 	}
 
