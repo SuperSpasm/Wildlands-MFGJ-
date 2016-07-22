@@ -1,13 +1,21 @@
 fileFormatVersion: 2
 guid: e2beb97362ae66449bcf6a7d36b3e7d3
-timeCreated: 1469182137
+timeCreated: 1469189307
 licenseType: Free
 TextureImporter:
-  fileIDToRecycleName: {}
+  fileIDToRecycleName:
+    21300000: climbing sheet_0
+    21300002: climbing sheet_1
+    21300004: climbing sheet_2
+    21300006: climbing sheet_3
+    21300008: climbing sheet_4
+    21300010: climbing sheet_5
+    21300012: climbing sheet_6
+    21300014: climbing sheet_7
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
-    enableMipMap: 1
+    enableMipMap: 0
     linearTexture: 0
     correctGamma: 0
     fadeOut: 0
@@ -26,11 +34,11 @@ TextureImporter:
   cubemapConvolutionSteps: 7
   cubemapConvolutionExponent: 1.5
   seamlessCubemap: 0
-  textureFormat: -1
+  textureFormat: -3
   maxTextureSize: 2048
   textureSettings:
     filterMode: -1
-    aniso: -1
+    aniso: 16
     mipBias: -1
     wrapMode: 1
   nPOTScale: 0
@@ -38,18 +46,186 @@ TextureImporter:
   rGBM: 0
   compressionQuality: 50
   allowsAlphaSplitting: 0
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 108
   alphaIsTransparency: 1
   textureType: 8
   buildTargetSettings: []
   spriteSheet:
-    sprites: []
+    sprites:
+    - name: climbing sheet_0
+      rect:
+        serializedVersion: 2
+        x: 29
+        y: 1
+        width: 74
+        height: 124
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 22, y: -7}
+        - {x: 26, y: -9}
+        - {x: 37, y: -9}
+        - {x: 37, y: 28}
+        - {x: 9, y: 59}
+        - {x: 3, y: 62}
+        - {x: -31, y: 62}
+        - {x: -37, y: 38}
+        - {x: -37, y: -56}
+        - {x: -27, y: -62}
+        - {x: 28, y: -62}
+        - {x: 37, y: -42}
+        - {x: 37, y: -9}
+        - {x: 26, y: -9}
+    - name: climbing sheet_1
+      rect:
+        serializedVersion: 2
+        x: 175
+        y: 1
+        width: 74
+        height: 124
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -37, y: 57}
+        - {x: -37, y: -44}
+        - {x: -34, y: -57}
+        - {x: 19, y: -57}
+        - {x: 35, y: -38}
+        - {x: 35, y: 38}
+        - {x: -4, y: 57}
+    - name: climbing sheet_2
+      rect:
+        serializedVersion: 2
+        x: 316
+        y: 1
+        width: 74
+        height: 124
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 21, y: 45}
+        - {x: -37, y: 45}
+        - {x: -37, y: -48}
+        - {x: -24, y: -56}
+        - {x: 22, y: -56}
+        - {x: 29, y: -52}
+        - {x: 34, y: -15}
+        - {x: 34, y: 35}
+    - name: climbing sheet_3
+      rect:
+        serializedVersion: 2
+        x: 455
+        y: 1
+        width: 74
+        height: 124
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -21, y: 52}
+        - {x: -37, y: 36}
+        - {x: -37, y: -15}
+        - {x: -30, y: -51}
+        - {x: -15, y: -57}
+        - {x: 36, y: -57}
+        - {x: 36, y: 52}
+    - name: climbing sheet_4
+      rect:
+        serializedVersion: 2
+        x: 603
+        y: 1
+        width: 74
+        height: 124
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -15, y: 60}
+        - {x: -37, y: 45}
+        - {x: -37, y: -40}
+        - {x: -34, y: -48}
+        - {x: -15, y: -62}
+        - {x: 25, y: -62}
+        - {x: 37, y: -50}
+        - {x: 37, y: 38}
+        - {x: 31, y: 60}
+    - name: climbing sheet_5
+      rect:
+        serializedVersion: 2
+        x: 742
+        y: 1
+        width: 74
+        height: 124
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -12, y: 56}
+        - {x: -37, y: 35}
+        - {x: -37, y: -28}
+        - {x: -34, y: -47}
+        - {x: -4, y: -56}
+        - {x: 23, y: -56}
+        - {x: 37, y: -28}
+        - {x: 37, y: 56}
+    - name: climbing sheet_6
+      rect:
+        serializedVersion: 2
+        x: 883
+        y: 1
+        width: 74
+        height: 124
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -32, y: 45}
+        - {x: -37, y: 42}
+        - {x: -37, y: -59}
+        - {x: 30, y: -59}
+        - {x: 37, y: -40}
+        - {x: 37, y: 45}
+    - name: climbing sheet_7
+      rect:
+        serializedVersion: 2
+        x: 1029
+        y: 1
+        width: 74
+        height: 124
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 12, y: -59}
+        - {x: 29, y: -59}
+        - {x: 35, y: -47}
+        - {x: 35, y: 28}
+        - {x: 3, y: 48}
+        - {x: -16, y: 45}
+        - {x: -20, y: 38}
+        - {x: -20, y: 37}
+        - {x: -20, y: 41}
+        - {x: -19, y: 41}
+        - {x: -16, y: 45}
+        - {x: -16, y: 51}
+        - {x: -20, y: 55}
+        - {x: -32, y: 55}
+        - {x: -37, y: 44}
+        - {x: -37, y: -46}
+        - {x: -33, y: -59}
+        - {x: -4, y: -59}
+        - {x: -3, y: -56}
+        - {x: -2, y: -46}
+        - {x: -2, y: -48}
     outline: []
   spritePackingTag: 
   userData: 
