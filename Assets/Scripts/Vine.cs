@@ -51,11 +51,11 @@ public class Vine : MonoBehaviour {
         }
 
         if (lastLinkCount == 0)
-            throw new VineError(string.Format("No last link set on {0}!", gameObject.name));
+            //throw new VineError(string.Format("No last link set on {0}!", gameObject.name));
 
         if (lastLinkCount > 1)
         {
-            throw new VineError(string.Format("There must only be one last link on {0}!", gameObject.name));
+            //throw new VineError(string.Format("There must only be one last link on {0}!", gameObject.name));
         }
 
     }

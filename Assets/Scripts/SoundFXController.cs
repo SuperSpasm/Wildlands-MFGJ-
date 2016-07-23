@@ -5,33 +5,6 @@ public class SoundFXController : MonoBehaviour {
     public  AudioClip[] soundFX;
     private AudioSource source;
 
-    void Awake()
-    {
-        source = GetComponent<AudioSource>();
-
-        if (source.loop) // make sure looping is off
-            source.loop = false;
-    }
-
-    public void playFX(string name)
-    {
-        AudioClip clipToPlay = null;
-        foreach(AudioClip clip in soundFX)
-        {
-            if (clip.name == name)
-            {
-                clipToPlay = clip;
-                break;
-            }
-        }
-        if (clipToPlay)
-        {
-            source.clip = clipToPlay;
-            source.Play();
-        }
-        else
-            throw new System.ArgumentException("there is no clip by the name of " + name + " in the FX clip array!");
-    }
 
     public void playFX(int index)
     {
@@ -45,4 +18,19 @@ public class SoundFXController : MonoBehaviour {
             source.Play();
         }
     }
+    public void playFX() { }
+
+    void Awake()
+    {
+        source = GetComponent<AudioSource>();
+
+        if (source.loop) // make sure looping is off
+            source.loop = false;
+    }
+    void Start()
+    {
+
+    }
+
+
 }

@@ -8,7 +8,7 @@ public class SaveCheckpoint : MonoBehaviour {
 	private GameObject gameController;
 
 	void Awake () {
-		scout = GameObject.FindGameObjectWithTag ("player_tag");
+		scout = Helper.GetPlayer();
 //		gameController = GameObject.FindGameObjectWithTag ("GameController");
 	}
 

@@ -20,7 +20,7 @@ public class OneSidedPlatform : MonoBehaviour {
         playerColliders = player.GetComponents<Collider2D>();
         platSurface = Helper.GetRealPos(platCollider).y;
         if (!player) // if player reference not set, search for it with tag
-            player = GameObject.FindGameObjectWithTag("player_tag");
+            player = Helper.GetPlayer();
     }
 
     void Update()

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public static class Helper
 {
@@ -39,6 +40,17 @@ public static class Helper
                                           side == null ? "null" : side) );
         }
     }
+
+    public static GameObject GetPlayer()
+    {
+        foreach (GameObject player in GameObject.FindGameObjectsWithTag("player_tag"))
+        {
+            if (!player.name.EndsWith("(Clone)"))
+                return player;
+        }
+        return null;
+    }
+
     public static float GetEdge(CircleCollider2D coll, string side)
     {
         side = side.ToUpper(); // ignore caps in input

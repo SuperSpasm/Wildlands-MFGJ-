@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 
 
+
 namespace UnityStandardAssets._2D
 {
     public class CameraFollow : MonoBehaviour
@@ -19,7 +20,7 @@ namespace UnityStandardAssets._2D
         private void Awake()
         {
             // Setting up the reference.
-            m_Player = GameObject.FindGameObjectWithTag("player_tag").transform;
+            m_Player = GetPlayer().transform;
         }
 
 
@@ -69,6 +70,17 @@ namespace UnityStandardAssets._2D
 
             // Set the camera's position to the target position with the same z component.
             transform.position = new Vector3(targetX, targetY, transform.position.z);
+        }
+
+
+        internal GameObject GetPlayer()
+        {
+            foreach (GameObject player in GameObject.FindGameObjectsWithTag("player_tag"))
+            {
+                if (!player.name.EndsWith("(Clone)"))
+                    return player;
+            }
+            return null;
         }
     }
 }

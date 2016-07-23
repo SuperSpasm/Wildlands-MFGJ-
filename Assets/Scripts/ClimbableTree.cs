@@ -30,7 +30,7 @@ public class ClimbableTree : MonoBehaviour {
     {
         // set up references
         if (!player)
-            player = GameObject.FindGameObjectWithTag("player_tag");
+            player = Helper.GetPlayer();
         //Debug.Log("Player = " + player.name);
 
         playerController = player.GetComponent<ScoutController>();

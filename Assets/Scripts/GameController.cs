@@ -25,7 +25,7 @@ public class GameController : MonoBehaviour {
 //	void OnLevelWasLoaded()
 //	{
 //		if (isRespawning) {
-//			GameObject scout = GameObject.FindGameObjectWithTag ("player_tag");					//get referece of player in current scene
+//			GameObject scout = Helper.GetPlayer();					//get referece of player in current scene
 //			scout.transform.position = new Vector3 (checkpoint.x, checkpoint.y, 0.0f);		//set position to checkpoint
 //			isRespawning = false;
 //		}
@@ -46,7 +46,7 @@ public class GameController : MonoBehaviour {
 	{
 //		isRespawning = true;
 //		openScene (SceneManager.GetActiveScene().buildIndex);
-		GameObject scout = GameObject.FindGameObjectWithTag ("player_tag");					//get referece of player in current scene
+		GameObject scout = Helper.GetPlayer();					//get referece of player in current scene
 		scout.transform.position = new Vector3 (checkpoint.x, checkpoint.y, 0.0f);		//set position to checkpoint
 
 	}
