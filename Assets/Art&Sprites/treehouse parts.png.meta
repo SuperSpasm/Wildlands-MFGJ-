@@ -1,0 +1,182 @@
+fileFormatVersion: 2
+guid: 30015ebb4d2c95742a657cfe32a95b03
+timeCreated: 1469241437
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: treehouse parts_0
+    21300002: treehouse parts_1
+    21300004: treehouse parts_2
+    21300006: treehouse parts_3
+    21300008: treehouse parts_4
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 1
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 7
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -3
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: -1
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  allowsAlphaSplitting: 0
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: treehouse parts_0
+      rect:
+        serializedVersion: 2
+        x: 90
+        y: 207
+        width: 404
+        height: 85
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -111.600006, y: 29.12001}
+        - {x: -133.6, y: -9.87999}
+        - {x: -133.6, y: -27.87999}
+        - {x: 134.4, y: -27.87999}
+        - {x: 134.4, y: -12.87999}
+        - {x: 121.399994, y: 29.12001}
+    - name: treehouse parts_1
+      rect:
+        serializedVersion: 2
+        x: 709
+        y: 64
+        width: 453
+        height: 145
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 62.940033, y: -32.76}
+        - {x: -78.05997, y: -32.76}
+        - {x: -145.05997, y: -34.76}
+        - {x: -149.05997, y: -37.76}
+        - {x: -149.05997, y: -44.76}
+        - {x: -146.05997, y: -47.76}
+        - {x: 150.94003, y: -47.76}
+        - {x: 150.94003, y: -35.76}
+        - {x: 149.94003, y: -34.76}
+      - - {x: -41.059967, y: -28.759998}
+        - {x: -39.059967, y: -30.759998}
+        - {x: -36.059967, y: -29.759998}
+        - {x: -36.059967, y: -25.759998}
+        - {x: -38.059967, y: -23.759998}
+        - {x: -41.059967, y: -24.759998}
+      - - {x: -21.059967, y: -28.759998}
+        - {x: -19.059967, y: -30.759998}
+        - {x: -16.059967, y: -29.759998}
+        - {x: -16.059967, y: -25.759998}
+        - {x: -18.059967, y: -23.759998}
+        - {x: -21.059967, y: -24.759998}
+      - - {x: -65.05997, y: -20.759998}
+        - {x: -63.059967, y: -22.759998}
+        - {x: -60.059967, y: -21.759998}
+        - {x: -60.059967, y: -15.759998}
+        - {x: -62.059967, y: -13.759998}
+        - {x: -65.05997, y: -14.759998}
+      - - {x: -54.059967, y: -20.759998}
+        - {x: -52.059967, y: -22.759998}
+        - {x: -49.059967, y: -21.759998}
+        - {x: -49.059967, y: -15.759998}
+        - {x: -51.059967, y: -13.759998}
+        - {x: -54.059967, y: -14.759998}
+      - - {x: -45.059967, y: -20.759998}
+        - {x: -43.059967, y: -22.759998}
+        - {x: -40.059967, y: -21.759998}
+        - {x: -40.059967, y: -5.7599983}
+        - {x: -42.059967, y: -3.7599983}
+        - {x: -45.059967, y: -4.7599983}
+      - - {x: -43.059967, y: 7.2400017}
+        - {x: -40.059967, y: 8.240002}
+        - {x: -40.059967, y: 48.24}
+        - {x: -45.059967, y: 48.24}
+        - {x: -45.059967, y: 9.240002}
+    - name: treehouse parts_2
+      rect:
+        serializedVersion: 2
+        x: 1458
+        y: 64
+        width: 184
+        height: 144
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -60.71997, y: 48.24}
+        - {x: -60.71997, y: -46.76}
+        - {x: -59.71997, y: -47.76}
+        - {x: 61.28003, y: -47.76}
+        - {x: 61.28003, y: 48.24}
+    - name: treehouse parts_3
+      rect:
+        serializedVersion: 2
+        x: 2129
+        y: 64
+        width: 98
+        height: 144
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -32.359985, y: 48.24}
+        - {x: -32.359985, y: -46.76}
+        - {x: -31.359985, y: -47.76}
+        - {x: 32.640015, y: -47.76}
+        - {x: 32.640015, y: 48.24}
+    - name: treehouse parts_4
+      rect:
+        serializedVersion: 2
+        x: 2772
+        y: 64
+        width: 90
+        height: 144
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -28.47998, y: 48.24}
+        - {x: -28.47998, y: -46.76}
+        - {x: -27.47998, y: -47.76}
+        - {x: 30.52002, y: -47.76}
+        - {x: 30.52002, y: 48.24}
+    outline: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

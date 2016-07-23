@@ -1,13 +1,13 @@
 fileFormatVersion: 2
 guid: 2fcfa1d9addb35642a642d2a2c57f0cf
-timeCreated: 1469193682
+timeCreated: 1469236240
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
-    21300000: treesheet2 + climb vine_0
-    21300002: treesheet2 + climb vine_1
-    21300004: treesheet2 + climb vine_2
-    21300006: treesheet2 + climb vine_3
+    21300000: x2 leafy trunk
+    21300002: x2 trunk
+    21300004: x2 trunk+roots
+    21300006: x2 climb vine
     21300008: treesheet2 + climb vine_4
   serializedVersion: 2
   mipmaps:
@@ -55,10 +55,10 @@ TextureImporter:
   buildTargetSettings: []
   spriteSheet:
     sprites:
-    - name: treesheet2 + climb vine_0
+    - name: x2 leafy trunk
       rect:
         serializedVersion: 2
-        x: 26
+        x: 23
         y: 64
         width: 220
         height: 182
@@ -66,76 +66,69 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline:
-      - - {x: 103, y: -56}
-        - {x: 110, y: -47}
-        - {x: 110, y: -41}
-        - {x: 100, y: -29}
-        - {x: 90, y: -29}
-        - {x: 72, y: -31}
-        - {x: 68, y: -31}
-        - {x: 70, y: -31}
-        - {x: 73, y: -30}
-        - {x: 97, y: 0}
-        - {x: 99, y: 6}
-        - {x: 99, y: 24}
-        - {x: 95, y: 30}
-        - {x: 85, y: 32}
-        - {x: 78, y: 29}
+      - - {x: 104, y: -25}
+        - {x: 75, y: -31}
+        - {x: 71, y: -31}
+        - {x: 73, y: -31}
+        - {x: 76, y: -30}
+        - {x: 100, y: 0}
+        - {x: 102, y: 6}
+        - {x: 102, y: 24}
+        - {x: 98, y: 30}
+        - {x: 88, y: 32}
+        - {x: 81, y: 29}
+        - {x: 71, y: 25}
         - {x: 68, y: 25}
-        - {x: 65, y: 25}
-        - {x: 66, y: 25}
-        - {x: 79, y: 30}
-        - {x: 85, y: 38}
-        - {x: 110, y: 59}
-        - {x: 110, y: 81}
-        - {x: 103, y: 91}
-        - {x: -92, y: 91}
-        - {x: -110, y: 71}
-        - {x: -110, y: 37}
-        - {x: -101, y: 32}
-        - {x: -96, y: 32}
-        - {x: -69, y: 22}
-        - {x: -59, y: 23}
-        - {x: -71, y: 21}
-        - {x: -79, y: 18}
-        - {x: -84, y: 5}
-        - {x: -107, y: 0}
-        - {x: -110, y: -8}
-        - {x: -110, y: -18}
-        - {x: -97, y: -44}
-        - {x: -91, y: -49}
-        - {x: -78, y: -48}
-        - {x: -74, y: -55}
-        - {x: -68, y: -61}
-        - {x: -66, y: -61}
-        - {x: -66, y: -63}
-        - {x: -74, y: -57}
-        - {x: -76, y: -53}
-        - {x: -78, y: -51}
-        - {x: -83, y: -50}
-        - {x: -110, y: -58}
-        - {x: -110, y: -85}
-        - {x: -60, y: -91}
-        - {x: 60, y: -91}
-        - {x: 77, y: -84}
-        - {x: 85, y: -76}
-        - {x: 81, y: -65}
-    - name: treesheet2 + climb vine_1
+        - {x: 69, y: 25}
+        - {x: 82, y: 30}
+        - {x: 105, y: 47}
+        - {x: 110, y: 53}
+        - {x: 110, y: 91}
+        - {x: -99, y: 91}
+        - {x: -109, y: 75}
+        - {x: -109, y: 38}
+        - {x: -98, y: 31}
+        - {x: -66, y: 22}
+        - {x: -56, y: 23}
+        - {x: -77, y: 19}
+        - {x: -81, y: 10}
+        - {x: -104, y: 0}
+        - {x: -109, y: -14}
+        - {x: -94, y: -44}
+        - {x: -88, y: -49}
+        - {x: -75, y: -48}
+        - {x: -71, y: -55}
+        - {x: -65, y: -61}
+        - {x: -63, y: -61}
+        - {x: -63, y: -63}
+        - {x: -71, y: -57}
+        - {x: -73, y: -53}
+        - {x: -75, y: -51}
+        - {x: -80, y: -50}
+        - {x: -108, y: -59}
+        - {x: -109, y: -66}
+        - {x: -109, y: -84}
+        - {x: -55, y: -91}
+        - {x: 67, y: -91}
+        - {x: 81, y: -86}
+        - {x: 110, y: -63}
+        - {x: 110, y: -34}
+    - name: x2 trunk
       rect:
         serializedVersion: 2
-        x: 392
+        x: 393
         y: 72
         width: 100
         height: 176
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline:
       - - {x: -50, y: 88}
         - {x: -50, y: -88}
         - {x: 50, y: -88}
         - {x: 50, y: 88}
-    - name: treesheet2 + climb vine_2
+    - name: x2 trunk+roots
       rect:
         serializedVersion: 2
         x: 622
@@ -161,7 +154,7 @@ TextureImporter:
         - {x: 95, y: -126.5}
         - {x: 106, y: -119.5}
         - {x: 106, y: -102.5}
-    - name: treesheet2 + climb vine_3
+    - name: x2 climb vine
       rect:
         serializedVersion: 2
         x: 946
@@ -213,7 +206,7 @@ TextureImporter:
         width: 102
         height: 208
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline:
       - - {x: -27, y: -100}

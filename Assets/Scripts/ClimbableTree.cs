@@ -92,6 +92,7 @@ public class ClimbableTree : MonoBehaviour {
 
         if (feetIn || bodyIn)
         { // if player is at least partially in the trigger, make sure this is available to climb on
+            if (!(player.transform.position.y >= topBound))
             playerController.availableForClimb = gameObject;
         }
         if (!feetIn && !bodyIn)

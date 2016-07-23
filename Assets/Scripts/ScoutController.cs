@@ -143,8 +143,9 @@ public class ScoutController : MonoBehaviour
             climbDisableCounter += Time.deltaTime;
         }
 
-        if (swingDisabled == SwingDisableStatus.waitingForGroud && m_Anim.GetBool("Ground"))
-            swingDisabled = SwingDisableStatus.Disabled;
+        if (swingDisabled == SwingDisableStatus.waitingForGroud)
+            if(m_Anim.GetBool("Ground") || m_Anim.GetBool("Climb") || m_Anim.GetBool("Swing"))
+                swingDisabled = SwingDisableStatus.Disabled;
 
         if (swingDisabled == SwingDisableStatus.Disabled) // if swing disabled and have been grounded
         { // keep track of whether swing is enabled
