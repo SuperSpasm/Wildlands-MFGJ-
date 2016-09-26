@@ -41,8 +41,10 @@ public class ClimbableTree : MonoBehaviour {
 
     }
 
-    void OnTriggerEnter2D(Collider2D otherCollider)
+    void OnTriggerStay2D(Collider2D otherCollider)
     {
+        if (playerController.climbingOnThis)                    // if player is already climbing, ignore this
+            return;
         // only react to the player
         if(otherCollider.gameObject == player)
         {
@@ -92,8 +94,10 @@ public class ClimbableTree : MonoBehaviour {
 
         if (feetIn || bodyIn)
         { // if player is at least partially in the trigger, make sure this is available to climb on
-            if (!(player.transform.position.y >= topBound))
-            playerController.availableForClimb = gameObject;
+            if (!(playerController.getCeilingCheck().position.y >= topBound))
+            {
+                playerController.availableForClimb = gameObject;
+            }
         }
         if (!feetIn && !bodyIn)
         { // both the player's feet and body are out of the trigger area

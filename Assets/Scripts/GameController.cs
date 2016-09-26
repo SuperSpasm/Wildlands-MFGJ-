@@ -5,7 +5,6 @@ using System.Collections;
 public class GameController : MonoBehaviour {
 
 	public static GameController gcInstance;
-
 	private Vector2 checkpoint;
 	private bool isRespawning;					//to check if the player is in the process of respawing
 
@@ -46,8 +45,9 @@ public class GameController : MonoBehaviour {
 	{
 //		isRespawning = true;
 //		openScene (SceneManager.GetActiveScene().buildIndex);
-		GameObject scout = Helper.GetPlayer();					//get referece of player in current scene
-		scout.transform.position = new Vector3 (checkpoint.x, checkpoint.y, 0.0f);		//set position to checkpoint
+		GameObject scout = Helper.GetPlayer();					                        // get referece of player in current scene
+		scout.transform.position = new Vector3 (checkpoint.x, checkpoint.y, 0.0f);		// set position to checkpoint
+        scout.GetComponent<Rigidbody2D>().velocity = Vector2.zero;                      // kill velocity
 
 	}
 

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ScoutController : MonoBehaviour
 {
+    public static GameObject player;                                    // a static reference to the player to get around the "clone" bug when using FindObjectByTag.
 
     [SerializeField] private float m_MaxSpeed = 10f;                    // The fastest the player can travel in the x axis.
     [SerializeField] private float m_JumpForce = 400f;                  // Amount of force added when the player jumps.
@@ -26,17 +27,17 @@ public class ScoutController : MonoBehaviour
     //
     //// CLIMBING
     //
+    [Header("Climbing")]
+    public GameObject climbingOnThis;    // null if not climbing on, otherwise has a reference to the object currently climbing on
 
-    [HideInInspector] public GameObject climbingOnThis;    // null if not climbing on, otherwise has a reference to the object currently climbing on
-
-    [HideInInspector] public GameObject availableForClimb; // will have a reference to a climbable object if you're in the vicinity of one. null otherwise.
+    public GameObject availableForClimb; // will have a reference to a climbable object if you're in the vicinity of one. null otherwise.
     [SerializeField]  private float m_climbSpeed;
     private float m_gravityScaleDefault;                   // Since climbing disables gravity, keep track of original value
     private bool climbDisabled = false;                    // disable climbing for a short period after jumping
 
     [SerializeField]
     [Tooltip("after jumping from a climbable surface climbing will be disabled on that object for this short time")]
-    private float climbDisableTime = 0.2f;
+    public float climbDisableTime = 0.2f;
     private float climbDisableCounter = 0;
     private GameObject disabledClimbObject;
 
@@ -47,7 +48,7 @@ public class ScoutController : MonoBehaviour
     //
     //// SWINGING
     //
-    
+    [Header("Swinging")]
     //[HideInInspector]
     public GameObject swingingOnThis;          // null if not swinging, otherwise has a reference to the object currently climbing on
     
@@ -64,7 +65,7 @@ public class ScoutController : MonoBehaviour
     // and since i just lower swingJoint to slide down, id have to handle situations when i hit the ground. probably would be easier to design levels such that you dont need this.
 
     [SerializeField] private Vector2 swingPositionOffset;
-    [SerializeField] private Vector2 swingRotationOffset;
+    [SerializeField] private float swingZRotationOffset;
     HingeJoint2D swingJoint;                                    // joint to be added to the player  attached to the vine while swinging
     private VineLink vineScript;
 
@@ -82,6 +83,7 @@ public class ScoutController : MonoBehaviour
 
     private void Awake()
     {
+        player = gameObject;
         // Setting up references.
         m_GroundCheck = transform.Find("GroundCheck");
         m_CeilingCheck = transform.Find("CeilingCheck");
@@ -94,6 +96,9 @@ public class ScoutController : MonoBehaviour
 
         availableForSwing = new List<GameObject>();
 		sfxCtr = GetComponent<SoundFXController> ();
+
+
+        //Debug.Log(string.Format("static player reference = {0}", (player) ? player.name : "null"));
     }
 
 
@@ -107,27 +112,42 @@ public class ScoutController : MonoBehaviour
 
     public void GroundCheck()
     {
+        Vector2 groundCheckStart = m_GroundCheck.position;                                           // start the raycast from here
+        float angleTolerance = 30;                                                                   // will raycast in a downwards arc of twice this many degrees
+
+        Vector2 leftVector = new Vector2(-Mathf.Sin(angleTolerance), -Mathf.Cos(angleTolerance));    // should return a vector [angleTolerance] degrees counter-clockwise from Vector2.down 
+        Vector2 middleVector = Vector2.down;
+        Vector2 rightVector = new Vector2(Mathf.Sin(angleTolerance), -Mathf.Cos(angleTolerance));    // should return a vector [angleTolerance] degrees clockwise from Vector2.down
+
         m_Grounded = false;
+        foreach (Vector2 v in new Vector2[] { leftVector, middleVector, rightVector })               // check whether the player is grounded in any of the three directions
+            if (Physics2D.Raycast(groundCheckStart, v, k_GroundedRadius, m_WhatIsGround))
+                m_Grounded = true;
+                
 
         // The player is grounded if a circlecast to the groundcheck position hits anything designated as ground
         // This can be done using layers instead but Sample Assets will not overwrite your project settings.
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(m_GroundCheck.position, k_GroundedRadius, m_WhatIsGround);
-        for (int i = 0; i < colliders.Length; i++)
-        {
-            if (colliders[i].gameObject != gameObject)
-            {
-                float colliderHeight = colliders[i].transform.position.y;
-                float feetHeight = m_GroundCheck.position.y;
+        //m_Grounded = false;
+        //Collider2D[] colliders = Physics2D.OverlapCircleAll(m_GroundCheck.position, k_GroundedRadius, m_WhatIsGround);
+        //for (int i = 0; i < colliders.Length; i++)
+        //{
+        //    if (colliders[i].gameObject != gameObject)
+        //    {
+        //        float colliderHeight = colliders[i].transform.position.y;
 
-                // make sure the character is ABOVE the collider if it's not rotated
-                // (don't perform this check for rotated objects, since it causes unexpected behavior)
-                if (colliders[i].transform.rotation != Quaternion.identity
-                  || feetHeight >= colliderHeight)
-                    m_Grounded = true;
 
-            }
-        }
-        m_Anim.SetBool("Ground", m_Grounded);
+        //        float feetHeight = m_GroundCheck.position.y;
+        //        //Debug.Log(string.Format("ground found, checking height. feetHeight= {0}, colliderHeight= {1}", feetHeight, colliderHeight));
+
+        //        // make sure the character is ABOVE the collider if it's not rotated
+        //        // (don't perform this check for rotated objects, since it causes unexpected behavior)
+        //        if (colliders[i].transform.rotation != Quaternion.identity
+        //          || feetHeight >= colliderHeight)
+        //            m_Grounded = true;
+
+        //    }
+        //}
+    m_Anim.SetBool("Ground", m_Grounded);
     }
 
     private void Update()
@@ -136,6 +156,7 @@ public class ScoutController : MonoBehaviour
         { // keep track of whether climb is enabled
             if (climbDisableCounter >= climbDisableTime)
             {
+                //Debug.Log("disable over");
                 climbDisabled = false;
                 climbDisableCounter = 0;
                 disabledClimbObject = null;
@@ -216,7 +237,7 @@ public class ScoutController : MonoBehaviour
 
     private void Climb(float moveHor, float moveVer, bool jump)
     {
-        Debug.Log("Climbing");
+        //Debug.Log("Climbing");
 
         if (jump)
         {   // detach from tree, jump
@@ -239,7 +260,7 @@ public class ScoutController : MonoBehaviour
                (moveHor < 0 && Helper.GetEdge(m_bodyCollider, "LEFT") <= treeScript.getBound("LEFT"))
             || (moveHor > 0 && Helper.GetEdge(m_bodyCollider, "RIGHT") >= treeScript.getBound("RIGHT")))
             { // player is trying to leave the climbable area, kill his horizontal movement
-                Debug.Log("killing horizontal movement. moveHor: " + moveHor);
+                //Debug.Log("killing horizontal movement. moveHor: " + moveHor);
                 moveHor = 0;
             }
 
@@ -255,7 +276,9 @@ public class ScoutController : MonoBehaviour
     }
     public void StartClimbing(GameObject obj)
     {
+        //Debug.Log("StartClimbing() called");
         climbingOnThis = obj;
+        m_Rigidbody2D.velocity = Vector2.zero;
         m_Rigidbody2D.gravityScale = 0;
         m_Grounded = false;
         m_Anim.SetBool("Climb", true);
@@ -290,7 +313,7 @@ public class ScoutController : MonoBehaviour
         {
             // set rotation to vine node connected to and then add offset
             transform.rotation = swingingOnThis.transform.rotation;
-            transform.Rotate(swingRotationOffset);
+            transform.Rotate(0,0,swingZRotationOffset);
 
             float speedMultiplier = m_swingSpeed * vineScript.swingEase;
             Vector2 userInput = new Vector2(moveHor, 0);
@@ -304,46 +327,66 @@ public class ScoutController : MonoBehaviour
             //}
 
 
-            // If the input is moving the player right and the player is facing left...
-            if (moveHor > 0 && !m_FacingRight)
+            // If the player is moving in the opposite direction of the input, flip!
+            if ((moveHor > 0 && !m_FacingRight) || (moveHor < 0 && m_FacingRight))
             {
                 // ... flip the player.
+                //Debug.Log("Flip em' and dip em'");
                 Flip();
-            }
-            // Otherwise if the input is moving the player left and the player is facing right...
-            else if (moveHor < 0 && m_FacingRight)
-            {
-                // ... flip the player.
-                Flip();
+                SetPlayerPosAndRot(swingingOnThis); // fix pos and rotation after flip
             }
         }
     }
     private void StartSwinging(GameObject chosenVineLink)
     {
-        Debug.Log("StartSwinging() called");
         swingingOnThis = chosenVineLink;
-        
+
         m_Rigidbody2D.velocity = Vector2.zero;                                  // kill velocity
-
-        // if facing right, subtract the x offset as opposed to adding it, so player is in front of vine (assumes offset has positive X)
-        Vector2 posOffset = (m_FacingRight) ? new Vector2(-swingPositionOffset.x, swingPositionOffset.y) : swingPositionOffset;
-        transform.position = chosenVineLink.transform.position + (Vector3)posOffset;
-
-        transform.rotation = chosenVineLink.transform.rotation;                 // set player rotation to vine
-        transform.Rotate(swingRotationOffset);                                  // rotate more by offset
 
         // add a joint to fix distance between the vine and the player
         swingJoint = gameObject.AddComponent<HingeJoint2D>();                   // attach a joint to maintain distance from vine
         swingJoint.connectedBody = swingingOnThis.GetComponent<Rigidbody2D>();
         //swingJoint.dampingRatio = 1;                                            // dampen the shit out of that movement
-        swingJoint.autoConfigureConnectedAnchor = false;                        // USED TO SLIDE DOWN VINE, CURRENTLY NOT IN USE
+        swingJoint.autoConfigureConnectedAnchor = false;
         m_Grounded = false;
         m_Anim.SetBool("Swing", true);
+
         vineScript = swingingOnThis.GetComponent<VineLink>();
+
+        SetPlayerPosAndRot(chosenVineLink);
     }
+
+    // helper method for swinging - sets player position and rotation corretly while swinging
+    private void SetPlayerPosAndRot(GameObject chosenVineLink)
+    {
+        Vine vine = chosenVineLink.GetComponent<VineLink>().vineRoot.GetComponent<Vine>();              // get the Vine the link is attached to
+        Vector2 posOffset = swingPositionOffset;                                                        // the offset to put between player and node (set to hinge joint connectedBody)
+        if (vine.overrideOffset)
+            posOffset = vine.newOffset;                                                                 // if the vine is set to override the offset, do that.
+        float theta;                                                                                    // the rotation of the node (around the z axis)
+
+        // only adjust offset if vinenode rotation isn't 0
+        if (chosenVineLink.transform.rotation.z != 0)
+        {
+            // adjust position offset by vine node rotation (formula obtained by vector calculations, rotating axes and then breaking down vectors to global axes components)
+            // in retrospect i could probably just have take the local transform.right / transform.up, but this seems to work and is possibly more efficient
+            theta = chosenVineLink.transform.rotation.z;
+            posOffset.x = posOffset.x * Mathf.Cos(theta) + posOffset.y * Mathf.Sin(theta);
+            posOffset.y = posOffset.x * Mathf.Sin(theta) + posOffset.y * Mathf.Cos(theta);
+        }
+
+        // if facing right, subtract the x offset as opposed to adding it, so player is in front of vine (assumes offset has positive X)
+        posOffset = (m_FacingRight) ? new Vector2(-posOffset.x, posOffset.y) : posOffset;
+        swingJoint.connectedAnchor = posOffset;
+        //Debug.Log("Set offset to: " + posOffset.ToString());
+
+        transform.rotation = chosenVineLink.transform.rotation;                 // set player rotation to vine
+        transform.Rotate(0,0,swingZRotationOffset);                                  // rotate more by offset
+    }
+
     public void StopSwinging()
     {
-        Debug.Log("StopSwinging() called");
+        //Debug.Log("StopSwinging() called");
         Destroy(swingJoint);
         m_Anim.SetBool("Swing", false);
 
@@ -364,7 +407,7 @@ public class ScoutController : MonoBehaviour
     }
     private GameObject chooseVineLink(float moveVer, bool jump)
     {
-        if (availableForSwing.Count == 0) // if there are no vines available, return false
+        if (availableForSwing.Count == 0) // if there are no vines available, return null
             return null;
 
         var relevantLinks = new List<GameObject>();
@@ -418,7 +461,7 @@ public class ScoutController : MonoBehaviour
         m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
     }
 
-    private void Flip()
+    public void Flip()
     {
         // Switch the way the player is labelled as facing.
         m_FacingRight = !m_FacingRight;
@@ -427,6 +470,10 @@ public class ScoutController : MonoBehaviour
         Vector3 theScale = transform.localScale;
         theScale.x *= -1;
         transform.localScale = theScale;
+    }
+    public bool IsFacingRight()
+    {
+        return m_FacingRight;
     }
 
 

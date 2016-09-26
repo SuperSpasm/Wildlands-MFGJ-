@@ -33,7 +33,16 @@ public class FadeText : MonoBehaviour {
 		fade = false;
 	}
 
-	void Awake()
+    public void FadeMusicAndSFX()
+    {
+        // called from animation to fade both music and SFX levels
+        // NOTE: for this to work, there should be two MenuMusicControllers on the same object,
+        //       one with musicTopVol as the mixer and the other with sfxTopVol
+        foreach (var controller in GetComponents<MenuMusicController>())
+            controller.FadeOutVol();
+    }
+
+    void Awake()
 	{
 		fadeTextAnim = GetComponent<Animator> ();
 		textGroup = GetComponent<CanvasGroup> ();

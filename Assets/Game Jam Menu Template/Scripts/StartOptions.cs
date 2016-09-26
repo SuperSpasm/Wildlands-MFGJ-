@@ -10,17 +10,15 @@ public class StartOptions : MonoBehaviour {
 
 	public int sceneToStart = 1;										//Index number in build settings of scene to load if changeScenes is true
 	public bool changeScenes;											//If true, load a new scene when Start is pressed, if false, fade out UI and continue in single scene
-	public bool changeMusicOnStart;										//Choose whether to continue playing menu music or start a new music clip
-
 
 	[HideInInspector] public bool inMainMenu = true;					//If true, pause button disabled in main menu (Cancel in input manager, default escape key)
 	[HideInInspector] public Animator animColorFade; 					//Reference to animator which will fade to and from black when starting game.
 	[HideInInspector] public Animator animMenuAlpha;					//Reference to animator that will fade out alpha of MenuPanel canvas group
-	 public AnimationClip fadeColorAnimationClip;		//Animation clip fading to color (black default) when changing scenes
+	public AnimationClip fadeColorAnimationClip;		                //Animation clip fading to color (black default) when changing scenes
 	[HideInInspector] public AnimationClip fadeAlphaAnimationClip;		//Animation clip fading out UI elements alpha
 
 
-	private PlayMusic playMusic;										//Reference to PlayMusic script
+    private MenuMusicController musicControl;                           //Reference to MenuMusicController script
 	private float fastFadeIn = .01f;									//Very short fade time (10 milliseconds) to start playing music immediately without a click/glitch
 	private ShowPanels showPanels;										//Reference to ShowPanels script on UI GameObject, to show and hide panels
 	private GameObject gameController;
@@ -30,20 +28,20 @@ public class StartOptions : MonoBehaviour {
 		//Get a reference to ShowPanels attached to UI object
 		showPanels = GetComponent<ShowPanels> ();
 
-		//Get a reference to PlayMusic attached to UI object
-		playMusic = GetComponent<PlayMusic> ();
+        musicControl = GetComponent<MenuMusicController>();
 		gameController = GameObject.FindGameObjectWithTag ("GameController");
 	}
 
+    void Start()
+    {
+        if (SceneManager.GetActiveScene().buildIndex == 0)
+        {
+            ResetMainMenu();
+        }   
+    }
 
 	public void StartButtonClicked()
 	{
-		//If changeMusicOnStart is true, fade out volume of music group of AudioMixer by calling FadeDown function of PlayMusic, using length of fadeColorAnimationClip as time. 
-		//To change fade time, change length of animation "FadeToColor"
-		if (changeMusicOnStart) 
-		{
-			playMusic.FadeDown(fadeColorAnimationClip.length);
-		}
 
 		//If changeScenes is true, start fading and change scenes halfway through animation when screen is blocked by FadeImage
 		if (changeScenes) 
@@ -65,14 +63,13 @@ public class StartOptions : MonoBehaviour {
 	}
 
 	//Once the level has loaded, check if we want to call PlayLevelMusic
-	void OnLevelWasLoaded()
+	void OnLevelWasLoaded(int sceneIndex)
 	{
-		//if changeMusicOnStart is true, call the PlayLevelMusic function of playMusic
-		if (changeMusicOnStart)
-		{
-			playMusic.PlayLevelMusic ();
-		}	
-	}
+        if (sceneIndex == 0)                                            // if the game was won and the first scene (main menu) was reloaded
+        {
+            ResetMainMenu();
+        }
+    }
 
 
 	public void LoadDelayed()
@@ -99,13 +96,6 @@ public class StartOptions : MonoBehaviour {
 		//Pause button now works if escape is pressed since we are no longer in Main menu.
 		inMainMenu = false;
 
-		//If changeMusicOnStart is true, fade out volume of music group of AudioMixer by calling FadeDown function of PlayMusic, using length of fadeColorAnimationClip as time. 
-		//To change fade time, change length of animation "FadeToColor"
-		if (changeMusicOnStart) 
-		{
-			//Wait until game has started, then play new music
-			Invoke ("PlayNewMusic", fadeAlphaAnimationClip.length);
-		}
 		//Set trigger for animator to start animation fading out Menu UI
 		animMenuAlpha.SetTrigger ("fade");
 		Invoke("HideDelayed", fadeAlphaAnimationClip.length);
@@ -113,11 +103,9 @@ public class StartOptions : MonoBehaviour {
 	}
 
 
-	public void PlayNewMusic()
+	public void ResetMainMenu()
 	{
-		//Fade up music nearly instantly without a click 
-		playMusic.FadeUp (fastFadeIn);
-		//Play music clip assigned to mainMusic in PlayMusic script
-		playMusic.PlaySelectedMusic (1);
-	}
+        // reset the music and fade it in
+        showPanels.ShowMenu();
+    }
 }

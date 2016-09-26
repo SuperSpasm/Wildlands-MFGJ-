@@ -14,54 +14,38 @@ public class Vine : MonoBehaviour {
     public bool overrideEaseValues;
     public float swingEase;
     public float swingDisableTime;
-    private VineLink[] chainLinks;
+    private Transform[] children;
     public bool overrideAutoAttach;
     public bool autoAttach;
+    public bool overrideOffset;
+    public Vector2 newOffset;
 
     void Awake()
     {
         // get references to child links
 
-        chainLinks = new VineLink[transform.childCount];
+        children = new Transform[transform.childCount];
         int i = 0;
         foreach(Transform child in transform)
         {
-            if (child.GetComponent<VineLink>())
-            {
-                chainLinks[i] = child.GetComponent<VineLink>();
+                children[i] = child;
                 i++;
-            }
         }
 
     }
 	// Use this for initialization
-	void Start () {
+	void Start ()
+    {
 
-        short lastLinkCount = 0;
-
-        foreach (VineLink link in chainLinks)
+        foreach (Transform child in children)
         {
-            if (link.isLastLink)
-            {         // count how many links have "isLastLink" marked
-                lastLinkCount++;
-            }
+            if (!child.GetComponent<VineLink>())
+                continue;
 
-            if(overrideEaseValues) // if relevant, override the ease values of each link
+            var link = child.GetComponent<VineLink>();
+            if (overrideEaseValues) // if relevant, override the ease values of each link
                 link.swingEase = swingEase;
+
         }
-
-        if (lastLinkCount == 0)
-            //throw new VineError(string.Format("No last link set on {0}!", gameObject.name));
-
-        if (lastLinkCount > 1)
-        {
-            //throw new VineError(string.Format("There must only be one last link on {0}!", gameObject.name));
-        }
-
     }
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 }

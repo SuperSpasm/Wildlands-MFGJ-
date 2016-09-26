@@ -1,14 +1,14 @@
 fileFormatVersion: 2
 guid: 30015ebb4d2c95742a657cfe32a95b03
-timeCreated: 1469241437
+timeCreated: 1471015647
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
-    21300000: treehouse parts_0
-    21300002: treehouse parts_1
-    21300004: treehouse parts_2
-    21300006: treehouse parts_3
-    21300008: treehouse parts_4
+    21300000: treehouse roof
+    21300002: treehouse floor
+    21300004: treehouse wall (1)
+    21300006: treehouse entrance
+    21300008: treehouse wall (2)
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -55,7 +55,7 @@ TextureImporter:
   buildTargetSettings: []
   spriteSheet:
     sprites:
-    - name: treehouse parts_0
+    - name: treehouse roof
       rect:
         serializedVersion: 2
         x: 90
@@ -72,13 +72,13 @@ TextureImporter:
         - {x: 134.4, y: -27.87999}
         - {x: 134.4, y: -12.87999}
         - {x: 121.399994, y: 29.12001}
-    - name: treehouse parts_1
+    - name: treehouse floor
       rect:
         serializedVersion: 2
-        x: 709
-        y: 64
-        width: 453
-        height: 145
+        x: 711
+        y: 65
+        width: 451
+        height: 15
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -127,39 +127,38 @@ TextureImporter:
         - {x: -40.059967, y: 48.24}
         - {x: -45.059967, y: 48.24}
         - {x: -45.059967, y: 9.240002}
-    - name: treehouse parts_2
+    - name: treehouse wall (1)
       rect:
         serializedVersion: 2
-        x: 1458
-        y: 64
-        width: 184
-        height: 144
+        x: 1459
+        y: 66
+        width: 182
+        height: 143
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline:
-      - - {x: -60.71997, y: 48.24}
-        - {x: -60.71997, y: -46.76}
-        - {x: -59.71997, y: -47.76}
-        - {x: 61.28003, y: -47.76}
-        - {x: 61.28003, y: 48.24}
-    - name: treehouse parts_3
+      - - {x: -60.059937, y: 48.06}
+        - {x: -60.059937, y: -46.94}
+        - {x: 61.940063, y: -46.94}
+        - {x: 61.940063, y: 48.06}
+    - name: treehouse entrance
       rect:
         serializedVersion: 2
-        x: 2129
-        y: 64
+        x: 2131
+        y: 59
         width: 98
         height: 144
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline:
-      - - {x: -32.359985, y: 48.24}
-        - {x: -32.359985, y: -46.76}
-        - {x: -31.359985, y: -47.76}
-        - {x: 32.640015, y: -47.76}
-        - {x: 32.640015, y: 48.24}
-    - name: treehouse parts_4
+      - - {x: -32.539917, y: 48.940002}
+        - {x: -32.539917, y: -43.059998}
+        - {x: -31.539917, y: -44.059998}
+        - {x: 33.460083, y: -44.059998}
+        - {x: 33.460083, y: 48.940002}
+    - name: treehouse wall (2)
       rect:
         serializedVersion: 2
         x: 2772

@@ -1,33 +1,41 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.Audio;
 
 public class MenuMusicController : MonoBehaviour {
     // a script that provides some basic functionality for the background music.
     // namely - starting, stopping, and fading in and out.
     // this is meant to be used in animation events or by triggers.
-    public static GameObject instance;
+    public static MenuMusicController BGMinstance;
+    public static MenuMusicController SFXinstance;
 
     private GameObject mainMenu; // a reference to the main menu
     private AudioSource bgMusic;
 
+
     public AudioMixer mainMixer;
+    public enum Action { CueMusic, FadeInVol, FadeOutVol, FadeToVol, ChangeClip }
+    public Action action = Action.FadeInVol;            // default to fade in trigger
 
-    public bool cueMusicOnStart;
-    public bool cueMusicOnTrigger;
+    public enum ActivationTime { OnStart, OnTrigger, MethodsOnly, OnStartOrLevelLoad }
+    public ActivationTime activationTime = ActivationTime.OnTrigger;
+    public int LevelToActivateIn;
 
-    public bool fadeInVolOnStart;
-    public bool fadeVolOnTrigger;    // if true, music will fade in when player enters trigger
-    public float fadeTime;        // the time over which to fade in the music in OnTriggerEnter
+    public enum Mixer { musicTopVol, sfxTopVol }
+    public Mixer mixer;
+    public AudioClip substituteClip;
+
+    public float fadeTime;                              // the time over which to fade in the music in OnTriggerEnter
 
     [Range(-80, 0)]
     [Tooltip("the volume in decibles to reach between 0 <-> (-80). this will be adjusted by a curve")]
     public float targetVolume;
 
     public enum FadeStatus { Idle, FadingIn, FadingOut }
+    private FadeStatus fadeStatus;
 
-    public FadeStatus fadeStatus;
-
-    private float deltaVolume;  // the volume to add each second. ALWAYS POSITIVE (whether fading in or out)
+    private string mixerGroup;
+    private float deltaVolume;                          // the volume to add each second. ALWAYS POSITIVE (whether fading in or out)
     private float counter;
 
     private bool triggered = false;
@@ -37,33 +45,61 @@ public class MenuMusicController : MonoBehaviour {
     void Awake()
     {
         // get references
-        mainMenu = GameObject.FindGameObjectWithTag("MenuUI"); // get a reference to main menu by tag (should be set in 00MainMenu Scene)
+        mainMenu = EnsureUnique.uniqueGameObjects["MenuUI"]; // get a reference to main menu by tag (should be set in 00MainMenu Scene)
         bgMusic = mainMenu.GetComponent<AudioSource>();
         fadeStatus = FadeStatus.Idle;
+
+    }
+
+    void doStuff()
+    {
+        switch (action)
+        {
+            case Action.FadeInVol:
+                FadeInVol();
+                break;
+            case Action.FadeOutVol:
+                FadeOutVol();
+                break;
+            case Action.FadeToVol:
+                FadeToVol();
+                break;
+            case Action.CueMusic:
+                CueMusic();
+                break;
+            case Action.ChangeClip:
+                ChangeClip();
+                break;
+        }
     }
 
     void Start()
     {
-        //Debug.Log(string.Format("deltavolume = target / time = {0} / {1} = {2}", targetVolume, fadeTime, deltaVolume));
-        if (cueMusicOnStart && !bgMusic.isPlaying)
-        {
-            bgMusic.Play();
+        if (activationTime == ActivationTime.OnStart || activationTime == ActivationTime.OnStartOrLevelLoad)
+        {   // only do stuff if set to operate at start
+            //Debug.Log(string.Format("deltavolume = target / time = {0} / {1} = {2}", targetVolume, fadeTime, deltaVolume));
+
+            doStuff();
         }
-        if (fadeInVolOnStart)
+    }
+
+    void OnLevelWasLoaded(int levelIndex)
+    {
+        Debug.Log(string.Format("OnLevelWasLoaded() called. current scene = {0}, ActivationScene = {1}", levelIndex, LevelToActivateIn));
+        if (activationTime == ActivationTime.OnStartOrLevelLoad && levelIndex == LevelToActivateIn)
         {
-            fadeInMusic();
+            Debug.Log(string.Format("activation time & levelIndex correct. ACTIVATING! object = " + Helper.GetHierarchy(gameObject)));
+            doStuff();
         }
     }
 
     void Update()
     {
 
-
         switch (fadeStatus)
         {
             case FadeStatus.FadingIn:
-                Debug.Log("Active! " + gameObject.name);
-                if (instance && instance != gameObject) // if another instance of this script started during fade in / out - stop fading
+                if (this != BGMinstance && this != SFXinstance)     
                     fadeStatus = FadeStatus.Idle;
                 else if (counter <= 0)
                 {
@@ -78,7 +114,7 @@ public class MenuMusicController : MonoBehaviour {
                 break;
 
             case FadeStatus.FadingOut:
-                if (instance && instance != gameObject) // if another instance of this script started during fade in / out - stop fading
+                if (this != BGMinstance && this != SFXinstance) // if started fade out but another instance has since taken over, stop
                     fadeStatus = FadeStatus.Idle;
                 else if (counter <= 0)
                 {
@@ -96,53 +132,112 @@ public class MenuMusicController : MonoBehaviour {
 
     void OnTriggerEnter2D (Collider2D otherCollider)
     {
-
-        if (fadeVolOnTrigger && otherCollider.tag == "player_tag" && !triggered)
-        {
+        if (activationTime == ActivationTime.OnTrigger && otherCollider.tag == "player_tag" && !triggered)
+        {   // only do stuff if set to operate on trigger
             triggered = true;
-            if (!bgMusic.isPlaying)
-                    bgMusic.Play();
-                
-                fadeInMusic();
-            
+            doStuff();
         }
     }
 
-    public void fadeInMusic()
+    public void ChangeClip()
+    {
+        bgMusic.clip = substituteClip;
+    }
+
+    public void CueMusic()
+    {
+        if (!bgMusic.isPlaying)
+            bgMusic.Play();
+    }
+
+    public void FadeToVol()
+    {
+        FadeToVol(this.targetVolume, this.fadeTime);
+    }
+    public void FadeToVol(float targetVolume, float fadeTime)
     {
         float currVol;
-        mainMixer.GetFloat("musicTopVol", out currVol);
+        mainMixer.GetFloat(mixer.ToString(), out currVol);
+        Debug.Log("FadeToVol() called");
+        if (currVol == targetVolume)
+            return;                                     // volume is already fine, do nothing
+        else if (currVol > targetVolume)
+            FadeOutVol(targetVolume, fadeTime);        // volume louder than target, fade out
+        else
+            FadeInVol(targetVolume, fadeTime);           // volume softer than target, fade in
+
+    }
+
+    public void FadeInVol()
+    {
+        FadeInVol(this.targetVolume, this.fadeTime);
+    }
+    public void FadeInVol(float targetVolume, float fadeTime)
+    {
+        Debug.Log(string.Format("FadeInVol called with targetVol = {0}, fadeTime = {1}. mixer= {2}", targetVolume, fadeTime, mixer));
+        this.targetVolume = targetVolume;
+        this.fadeTime = fadeTime;
+
+        if (!bgMusic.isPlaying)
+            bgMusic.Play();
+
+        float currVol;
+        mainMixer.GetFloat(mixer.ToString(), out currVol);
         if (currVol > targetVolume) // if the volume is already higher than the target, do nothing
             return;
 
-        instance = gameObject; // set this as the active instance;
+        switch (mixer)                      // set as appropriate active instance
+        {
+            case Mixer.musicTopVol:
+                BGMinstance = this;
+                break;
+            case Mixer.sfxTopVol:
+                SFXinstance = this;
+                break;
+        }
         fadeStatus = FadeStatus.FadingIn;
         counter = fadeTime;
 
         //get deltaVol (current volume - target)
-        mainMixer.GetFloat("musicTopVol", out currVol);
+        mainMixer.GetFloat(mixer.ToString(), out currVol);
         deltaVolume = Mathf.Abs((currVol - targetVolume) / fadeTime);
 
-        mainMixer.GetFloat("musicTopVol", out currVol);
+        mainMixer.GetFloat(mixer.ToString(), out currVol);
 
 
     }
-    public void fadeOutMusic()
+
+    public void FadeOutVol()
     {
-        instance = gameObject; // set this as the active instance;
+        FadeOutVol(targetVolume, fadeTime);
+    }
+    public void FadeOutVol(float targetVolume, float fadeTime)
+    {
+        Debug.Log(string.Format("FadeOutVol called with targetVol = {0}, fadeTime = {1}. mixer= {2}", targetVolume, fadeTime, mixer));
+        this.targetVolume = targetVolume;
+        this.fadeTime = fadeTime;
+        switch (mixer)                      // set as appropriate active instance
+        {
+            case Mixer.musicTopVol:
+                BGMinstance = this;
+                break;
+            case Mixer.sfxTopVol:
+                SFXinstance = this;
+                break;
+        }
 
         float currVol;
-        mainMixer.GetFloat("musicTopVol", out currVol);
+        mainMixer.GetFloat(mixer.ToString(), out currVol);
 
         //get deltaVol (current volume - target)
-        mainMixer.GetFloat("musicTopVol", out currVol);
+        mainMixer.GetFloat(mixer.ToString(), out currVol);
         deltaVolume = Mathf.Abs((currVol - targetVolume) / fadeTime);
 
-
-
         if (currVol < targetVolume)
-            throw new System.ArgumentException(string.Format("Trying to fade out but current volume ({0}) is lower than target volume! ({1})", currVol, targetVolume));
-
+        {
+            Debug.Log(string.Format("Trying to fade out but current volume ({0}) is lower than target volume! ({1})", currVol, targetVolume));
+            return;
+        }
         else
         {
             fadeStatus = FadeStatus.FadingOut;
@@ -150,20 +245,18 @@ public class MenuMusicController : MonoBehaviour {
         }
     }
 
-  
-
 
     private void SetVolume (float vol)
     {
         if (vol < -80 || vol > 0)
             throw new System.ArgumentOutOfRangeException("volume must be a float between 0 and -80!");
         else
-            mainMixer.SetFloat("musicTopVol", vol);
+            mainMixer.SetFloat(mixer.ToString(), vol);
     }
     private void AddVolume(float volToAdd)
     {
         float currVol;
-        mainMixer.GetFloat("musicTopVol", out currVol);
-        mainMixer.SetFloat("musicTopVol", currVol + volToAdd);
+        mainMixer.GetFloat(mixer.ToString(), out currVol);
+        mainMixer.SetFloat(mixer.ToString(), currVol + volToAdd);
     }
 }

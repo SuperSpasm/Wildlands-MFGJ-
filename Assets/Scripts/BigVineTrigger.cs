@@ -48,6 +48,8 @@ public class BigVineTrigger : MonoBehaviour {
             switch (whatToDo)
             {
                 case WhatToDo.DisableUserControl:
+                    if (!scoutControl.IsFacingRight())                  // make sure player is facing swing direction
+                        scoutControl.Flip();
                     scoutUserControl.disableMovement = true;
                     break;
                 case WhatToDo.EnableUserConrol:
@@ -55,7 +57,6 @@ public class BigVineTrigger : MonoBehaviour {
                     break;
                 case WhatToDo.EnableEffector:
                     effector.enabled = true;
-
                     break;
                 case WhatToDo.DisableEffector:
                     effector.enabled = false;

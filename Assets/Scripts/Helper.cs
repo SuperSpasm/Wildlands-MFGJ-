@@ -1,19 +1,43 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 using System;
 
 public static class Helper
 {
     // a static helper class for common methods and shortcuts
-    public static GameObject GetParent(GameObject obj)
+    public static Transform GetParent(Transform trans)
     {
-        Transform parentTransform = obj.transform.parent;
-        if (parentTransform == null)
+        // returns the parent transform for the requested object, or null if it is top-level
+        Transform parentTransform = trans.transform.parent;
+        if (!parentTransform)
             return null;
 
-        return parentTransform.gameObject;
+        return parentTransform;
     }
 
+    public static string GetHierarchy(GameObject obj)
+    {
+        // returns a string of the hierarchy for the given object (with each parent's name) seperated by '/' (including the object itself)
+        var parents = new Stack<string>();
+        string returnString = "/";
+        Transform currParent = GetParent(obj.transform);
+
+        int iterations = 0;
+        while (currParent != null)
+        {
+            parents.Push(currParent.name);              //push each parent's name onto the stack until reached the top level game object
+            currParent = GetParent(currParent);
+            if (++iterations >= 50)
+                throw new System.Exception("probably stuck in an infinite loop.");
+        }
+
+        foreach (string parentName in parents)          // for each parent's name in the stack (starting with the top level first)
+            returnString += parentName + '/';           // append the parent name to the return string
+
+        returnString += obj.name;                       // finally, append the name of the object this was called on
+            
+        return returnString;
+    }
 
     public static float GetEdge(BoxCollider2D coll,string side)
     {
@@ -43,12 +67,13 @@ public static class Helper
 
     public static GameObject GetPlayer()
     {
-        foreach (GameObject player in GameObject.FindGameObjectsWithTag("player_tag"))
-        {
-            if (!player.name.EndsWith("(Clone)"))
-                return player;
-        }
-        return null;
+        return ScoutController.player;
+        //foreach (GameObject player in GameObject.FindGameObjectsWithTag("player_tag"))
+        //{
+        //    if (!player.name.EndsWith("(Clone)"))
+        //        return player;
+        //}
+        //return null;
     }
 
     public static float GetEdge(CircleCollider2D coll, string side)

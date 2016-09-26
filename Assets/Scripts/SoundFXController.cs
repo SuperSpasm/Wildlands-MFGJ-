@@ -4,6 +4,7 @@ using System.Collections;
 
 public class SoundFXController : MonoBehaviour {
     public  AudioClip[] soundFX;
+    public float[] volumeScales;
     private AudioSource source;
 
 
@@ -15,8 +16,10 @@ public class SoundFXController : MonoBehaviour {
         }
         else
         {
-            source.clip = soundFX[index];
-            source.Play();
+            float scale = (volumeScales.Length > index) ? volumeScales[index] : 1.0f;
+            source.PlayOneShot(soundFX[index], scale);
+            //source.clip = soundFX[index];
+            //source.Play();
         }
     }
     public void playFX() { }
