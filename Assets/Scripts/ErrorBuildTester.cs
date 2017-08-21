@@ -31,10 +31,8 @@ public class ErrorBuildTester : MonoBehaviour {
             {
                 case ErrorType.system:
                     throw new MeaninglessSystemError("System-derived error");
-                    break;
                 case ErrorType.unity:
                     throw new MeaninglessUnityError("Unity-derived error");
-                    break;
             }
         }
     }

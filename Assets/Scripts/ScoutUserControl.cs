@@ -22,6 +22,8 @@ public class ScoutUserControl : MonoBehaviour
             // Read the jump input in Update so button presses aren't missed.
             m_Jump = CrossPlatformInputManager.GetButtonDown("Jump");
         }
+        float newZ = Helper.GetTargetAngle(GetComponent< Rigidbody2D>().velocity);
+        transform.rotation.SetEulerAngles(0, 0, newZ);
     }
 
 

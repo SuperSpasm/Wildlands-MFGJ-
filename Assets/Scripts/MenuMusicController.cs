@@ -85,7 +85,7 @@ public class MenuMusicController : MonoBehaviour {
 
     void OnLevelWasLoaded(int levelIndex)
     {
-        Debug.Log(string.Format("OnLevelWasLoaded() called. current scene = {0}, ActivationScene = {1}", levelIndex, LevelToActivateIn));
+        //Debug.Log(string.Format("OnLevelWasLoaded() called. current scene = {0}, ActivationScene = {1}", levelIndex, LevelToActivateIn));
         if (activationTime == ActivationTime.OnStartOrLevelLoad && levelIndex == LevelToActivateIn)
         {
             Debug.Log(string.Format("activation time & levelIndex correct. ACTIVATING! object = " + Helper.GetHierarchy(gameObject)));
@@ -139,6 +139,15 @@ public class MenuMusicController : MonoBehaviour {
         }
     }
 
+    public void FadeMusicAndSFX()
+    {
+        // called from animation to fade both music and SFX levels
+        // NOTE: for this to work, there should be two MenuMusicControllers on the same object,
+        //       one with musicTopVol as the mixer and the other with sfxTopVol
+        foreach (var controller in GetComponents<MenuMusicController>())
+            controller.FadeOutVol(-80, 3);
+    }
+
     public void ChangeClip()
     {
         bgMusic.clip = substituteClip;
@@ -174,7 +183,7 @@ public class MenuMusicController : MonoBehaviour {
     }
     public void FadeInVol(float targetVolume, float fadeTime)
     {
-        Debug.Log(string.Format("FadeInVol called with targetVol = {0}, fadeTime = {1}. mixer= {2}", targetVolume, fadeTime, mixer));
+        //Debug.Log(string.Format("FadeInVol called with targetVol = {0}, fadeTime = {1}. mixer= {2}", targetVolume, fadeTime, mixer));
         this.targetVolume = targetVolume;
         this.fadeTime = fadeTime;
 
@@ -213,7 +222,7 @@ public class MenuMusicController : MonoBehaviour {
     }
     public void FadeOutVol(float targetVolume, float fadeTime)
     {
-        Debug.Log(string.Format("FadeOutVol called with targetVol = {0}, fadeTime = {1}. mixer= {2}", targetVolume, fadeTime, mixer));
+        //Debug.Log(string.Format("FadeOutVol called with targetVol = {0}, fadeTime = {1}. mixer= {2}", targetVolume, fadeTime, mixer));
         this.targetVolume = targetVolume;
         this.fadeTime = fadeTime;
         switch (mixer)                      // set as appropriate active instance

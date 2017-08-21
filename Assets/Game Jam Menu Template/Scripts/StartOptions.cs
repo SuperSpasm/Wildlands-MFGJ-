@@ -32,33 +32,10 @@ public class StartOptions : MonoBehaviour {
 		gameController = GameObject.FindGameObjectWithTag ("GameController");
 	}
 
-    void Start()
-    {
-        if (SceneManager.GetActiveScene().buildIndex == 0)
-        {
-            ResetMainMenu();
-        }   
-    }
-
 	public void StartButtonClicked()
 	{
-
-		//If changeScenes is true, start fading and change scenes halfway through animation when screen is blocked by FadeImage
-		if (changeScenes) 
-		{
-			//Use invoke to delay calling of LoadDelayed by half the length of fadeColorAnimationClip
-			//Invoke ("LoadDelayed", fadeColorAnimationClip.length * .5f);
-			LoadDelayed();
-			//Set the trigger of Animator animColorFade to start transition to the FadeToOpaque state.
-			//animColorFade.SetTrigger ("fade");
-		} 
-
-		//If changeScenes is false, call StartGameInScene
-		else 
-		{
-			//Call the StartGameInScene function to start game without loading a new scene.
-			StartGameInScene();
-		}
+        GetComponent<Animator>().SetTrigger("fade");
+        inMainMenu = false;
 
 	}
 
@@ -105,7 +82,15 @@ public class StartOptions : MonoBehaviour {
 
 	public void ResetMainMenu()
 	{
+
+        Debug.Log("ResetMainMenu() called");
         // reset the music and fade it in
         showPanels.ShowMenu();
+        inMainMenu = true;
+    }
+
+    public void loadNextLevel()
+    {
+        gameController.GetComponent<GameController>().changeScene();
     }
 }

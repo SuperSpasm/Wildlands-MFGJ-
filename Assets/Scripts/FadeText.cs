@@ -15,6 +15,9 @@ public class FadeText : MonoBehaviour {
 
 	public void changeText()	//called at the end of fade out animation clip
 	{
+        if (textstrings.Length == 0)
+            return;
+
 		if (iterator >= textstrings.Length) {
 			text.text = "";
 			//gameController.GetComponent<GameController> ().changeScene ();	
@@ -39,7 +42,7 @@ public class FadeText : MonoBehaviour {
         // NOTE: for this to work, there should be two MenuMusicControllers on the same object,
         //       one with musicTopVol as the mixer and the other with sfxTopVol
         foreach (var controller in GetComponents<MenuMusicController>())
-            controller.FadeOutVol();
+            controller.FadeOutVol(-80,3);
     }
 
     void Awake()

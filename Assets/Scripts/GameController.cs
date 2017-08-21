@@ -51,23 +51,20 @@ public class GameController : MonoBehaviour {
 
 	}
 
-	private void openScene(int sceneNum)
-	{
-		if (sceneNum >= totalScenes)
-			sceneNum = 0;
-		SceneManager.LoadScene (sceneNum);
-
-	}
 
 	private void loadDelayed()
 	{
-		
-		openScene (SceneManager.GetActiveScene ().buildIndex + 1);
+        int sceneNum = SceneManager.GetActiveScene().buildIndex + 1;
+        if (sceneNum >= totalScenes)
+            sceneNum = 0;
+        //Debug.Log("About to change scene to scene "+sceneNum+ "!");
+        SceneManager.LoadScene(sceneNum);
 	}
 
 	public void changeScene()
 	{
 		this.GetComponentInChildren<Animator> ().SetTrigger ("fade");
+        //Debug.Log("set fade trigger. invoking scene change");
 		Invoke("loadDelayed",fadeColorAnimationClip.length * 0.5f);
 	}
 

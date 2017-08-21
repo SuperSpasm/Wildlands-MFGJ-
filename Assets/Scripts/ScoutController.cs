@@ -232,6 +232,9 @@ public class ScoutController : MonoBehaviour
         {
             Jump();
         }
+
+        float newZ = Helper.GetTargetAngle(m_Rigidbody2D.velocity);
+        transform.rotation.SetEulerAngles(0, 0, newZ);
     }
 
 
@@ -312,8 +315,11 @@ public class ScoutController : MonoBehaviour
         else
         {
             // set rotation to vine node connected to and then add offset
-            transform.rotation = swingingOnThis.transform.rotation;
-            transform.Rotate(0,0,swingZRotationOffset);
+
+            //transform.rotation = swingingOnThis.transform.rotation;
+            float newZ = Helper.GetTargetAngle(m_Rigidbody2D.velocity);
+            transform.rotation.SetEulerAngles(0, 0, newZ);
+            transform.Rotate(0, 0, swingZRotationOffset);
 
             float speedMultiplier = m_swingSpeed * vineScript.swingEase;
             Vector2 userInput = new Vector2(moveHor, 0);

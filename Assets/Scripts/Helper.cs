@@ -119,4 +119,23 @@ public static class Helper
         CircleCollider2D c = new CircleCollider2D();
         System.Console.WriteLine(c.GetType().IsInstanceOfType(new CircleCollider2D()));
     }
+
+    /// <summary>
+    /// returns the angle of the vector2 on the XY plane [0,360)
+    /// </summary>
+    /// <param name="input"> a vector representing direction on plane XY</param>
+    /// <returns></returns>
+    public static float GetTargetAngle(Vector2 input)
+    {
+        float naiveAngle = Mathf.Rad2Deg * Mathf.Atan2(input.y, input.x);
+        if (naiveAngle < 0)
+            naiveAngle += 360;
+
+        float realAngle = 360 - naiveAngle + 90;
+
+        if (realAngle >= 360)
+            realAngle -= 360;
+
+        return realAngle;
+    }
 }
