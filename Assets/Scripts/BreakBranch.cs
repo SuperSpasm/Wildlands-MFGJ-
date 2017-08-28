@@ -4,27 +4,17 @@ using System.Collections;
 
 public class BreakBranch : MonoBehaviour {
 
-    private enum BranchStatus {
-                                CountingToBreak,                                    // Script enabled but branch has not been broken yet
-                                StartedFalling,                                     // Branch has been broken, waiting to disable collider
-                                PlayerStillAirBorne,                                   // Branch broken, collider disabled, waiting for player to be grounded
-                                CountingToRespawn                                   // Branch broken, player was grounded, respawn counter in progress
-                              }
-    private BranchStatus branchStatus = BranchStatus.CountingToBreak;
-
-	public float timeToFall;
-	public float timeToReset = 2.0f;
+	public float timeUntilFall = 2.5f;                                              // the time between a player stepping on the branch, and when it falls
+	public float timeToReset = 2.0f;                                                // the time between a branch breaking, and resetting
 	private Rigidbody2D rb;
 
-	private float counter;
-	[HideInInspector]public Vector3 initPos;                                         // set in BreakBranchController
-	[HideInInspector]public Vector3 initRot;                                         // set in BreakBranchController
-    private BreakBranchController brkBrnchCtr;
+	private Vector3 initPos;
+	private Quaternion initRot;
 
     [Header("SFX")]
     public AudioClip crackSFX;
     public AudioClip breakSFX;
-    public AudioMixerGroup SFXMixer;
+
     public int cracksToSound = 1;
     private AudioSource audioSource;
 
@@ -36,19 +26,24 @@ public class BreakBranch : MonoBehaviour {
 
     private Animator playerAnimator;                                                // used to determine whether player is grounded
 
+    private bool triggered = false;                                                 // true after player steps on branch
+    private bool broken = false;                                                    // is the branch currently broken?
+    private bool canReset = false;                                                  // false if branch broke and player has been airborneever since, true otherwise.
 
     void Awake() {
-        counter = 0.0f;
+
+        #region Get refs/ set vars
         rb = GetComponent<Rigidbody2D>();
-        playerAnimator = ScoutController.player.GetComponent<Animator>();
-		brkBrnchCtr = GetComponent<BreakBranchController> ();
-
-        timeBetweenCracks = timeToFall / (cracksToSound + 1);
-
-        audioSource = gameObject.AddComponent<AudioSource>();
-        audioSource.outputAudioMixerGroup = SFXMixer;
-
+        audioSource = GetComponent<AudioSource>();
         sprites = GetComponentsInChildren<SpriteRenderer>();
+        playerAnimator = ScoutController.player.GetComponent<Animator>();
+
+        initPos = transform.position;
+        initRot = transform.rotation;
+
+        timeBetweenCracks = timeUntilFall / (cracksToSound + 1);
+        #endregion
+
         foreach(Collider2D coll in GetComponents<Collider2D>())
         { // get the non- trigger collider
             if (!coll.isTrigger)
@@ -63,57 +58,91 @@ public class BreakBranch : MonoBehaviour {
     }
 
 	void Update () {
+        bool waitingForGround = broken && !canReset;
+        if (waitingForGround)
+            if (playerAnimator.GetBool("Ground") || playerAnimator.GetBool("Climb") || playerAnimator.GetBool("Swing"))
+                canReset = true;
 
-        counter += Time.deltaTime;                                                          // increase counter
+        #region OLD
+        //counter += Time.deltaTime;                                                          // increase counter
 
-        switch (branchStatus)
+        //switch (branchStatus)
+        //{
+        //    case BranchStatus.CountingToBreak:
+
+        //        crackSfxTimer += Time.deltaTime;
+
+        //        // if branch is still unbroken, and the time between cracks has passed
+        //        if (crackSfxTimer >= timeBetweenCracks)
+        //        {                                                                           // play a crack sound
+        //            crackSfxTimer = 0;
+        //            audioSource.clip = crackSFX;
+        //            audioSource.Play();
+        //        }
+        //        // else if the branch is still unbroken, and the time to fall has passed
+        //        else if (counter >= timeUntilFall)
+        //        {
+        //            Break();                                                                // break the branch
+        //            counter = 0.0f;                                                         // reset counter to count until collider disable;
+        //            branchStatus = BranchStatus.StartedFalling;                             // set status
+        //        }
+        //        break;
+
+        //    case BranchStatus.StartedFalling:
+        //        if (counter >= 0.2f)
+        //        {
+        //            m_collider.enabled = false;                                            // only disable collider a small amount of time after breaking
+        //        }                                                                          // this is so the branch falls in a more realistic manner
+        //        branchStatus = BranchStatus.PlayerStillAirBorne;
+        //        goto case BranchStatus.PlayerStillAirBorne;                                   // immediately go to the WaitingForGround case to detect a grounded player
+
+        //    case BranchStatus.PlayerStillAirBorne:
+        //        if (playerAnimator.GetBool("Ground") || playerAnimator.GetBool("Climb") || playerAnimator.GetBool("Swing"))                                      // player is grounded, climbing, or swinging
+        //        {
+        //            counter = 0;                                                           // reset elapsed time to count until reset
+        //            branchStatus = BranchStatus.CountingToRespawn;                         // set status
+        //        }
+        //        break;
+
+        //    case BranchStatus.CountingToRespawn:
+        //        if (counter >= timeToReset)
+        //        {
+        //            Reset();                                                               // if timeToReset has passed, reset the branch (also enables collider)
+        //        }                                                                          // (Reset() also sets the status correctly)
+        //        break;
+        //}
+        #endregion
+    }
+
+    void OnTriggerEnter2D(Collider2D otherCollider)
+    {
+        if (triggered)
+            return;
+        if (otherCollider.tag == "player_tag")
         {
-            case BranchStatus.CountingToBreak:
-
-                crackSfxTimer += Time.deltaTime;
-
-                // if branch is still unbroken, and the time between cracks has passed
-                if (crackSfxTimer >= timeBetweenCracks)
-                {                                                                           // play a crack sound
-                    crackSfxTimer = 0;
-                    audioSource.clip = crackSFX;
-                    audioSource.Play();
-                }
-                // else if the branch is still unbroken, and the time to fall has passed
-                else if (counter >= timeToFall)
-                {
-                    Break();                                                                // break the branch
-                    counter = 0.0f;                                                         // reset counter to count until collider disable;
-                    branchStatus = BranchStatus.StartedFalling;                             // set status
-                }
-                break;
-
-            case BranchStatus.StartedFalling:
-                if (counter >= 0.2f)
-                {
-                    m_collider.enabled = false;                                            // only disable collider a small amount of time after breaking
-                }                                                                          // this is so the branch falls in a more realistic manner
-                branchStatus = BranchStatus.PlayerStillAirBorne;
-                goto case BranchStatus.PlayerStillAirBorne;                                   // immediately go to the WaitingForGround case to detect a grounded player
-
-            case BranchStatus.PlayerStillAirBorne:
-                if (playerAnimator.GetBool("Ground") || playerAnimator.GetBool("Climb") || playerAnimator.GetBool("Swing"))                                      // player is grounded, climbing, or swinging
-                {
-                    counter = 0;                                                           // reset elapsed time to count until reset
-                    branchStatus = BranchStatus.CountingToRespawn;                         // set status
-                }
-                break;
-
-            case BranchStatus.CountingToRespawn:
-                if (counter >= timeToReset)
-                {
-                    Reset();                                                               // if timeToReset has passed, reset the branch (also enables collider)
-                }                                                                          // (Reset() also sets the status correctly)
-                break;
+            triggered = true;
+            StartCoroutine(CrackThenBreak());
+            return;
         }
-	}
+    }
+
+    private IEnumerator CrackThenBreak()
+    {
+        audioSource.clip = crackSFX;
+        for (int i = 0; i < cracksToSound; i++)
+        {
+            yield return new WaitForSeconds(timeBetweenCracks);
+            print("playing branch crack");
+            audioSource.Play();
+        }
+        yield return new WaitForSeconds(timeBetweenCracks);
+        Break();
+
+    }
     private void Break()
     {
+        broken = true;
+
         rb.gravityScale = 2.5f;
         rb.isKinematic = false;
 
@@ -125,19 +154,31 @@ public class BreakBranch : MonoBehaviour {
             sprite.sortingLayerName = "Ground_sort";    // set to ground layer so they're in front of nearly everything but behind player
             sprite.sortingOrder = 5;                    // bring them to front of layer to appear in front of ground
         }
+        StartCoroutine(DisableCollider(0.2f));
+        StartCoroutine(Reset(timeToReset));
+
+
     }
-    private void Reset()
+    private IEnumerator DisableCollider(float wait)
     {
-        counter                      = 0.0f;     
-        crackSfxTimer         = 0.0f;
-        rb.gravityScale                  = 0.0f;
-        rb.isKinematic                   = true;
-        m_collider.enabled               = true;
-        gameObject.transform.eulerAngles = initRot;
-        gameObject.transform.position    = initPos;
-        brkBrnchCtr.enabled              = true;
-        branchStatus                     = BranchStatus.CountingToBreak;
-        enabled                          = false;
+        yield return new WaitForSeconds(wait);
+        m_collider.enabled = false;
+    }
+    private IEnumerator Reset(float wait)
+    {
+        yield return new WaitForSeconds(wait);
+        yield return new WaitUntil(() => canReset == true);             // only reset if canReset flag is true
+        
+        rb.gravityScale                     = 0.0f;
+        rb.velocity                         = Vector2.zero;
+        rb.bodyType                         = RigidbodyType2D.Static;
+        m_collider.enabled                  = true;
+        transform.rotation                  = initRot;
+        transform.position                  = initPos;
+
+        broken                              = false;
+        canReset                            = false;
+        triggered                           = false;
 
         foreach (SpriteRenderer sprite in sprites)
         { // reset sprites in render order
@@ -145,5 +186,6 @@ public class BreakBranch : MonoBehaviour {
             sprite.sortingOrder = 0;
         }
     }
+
 
 }

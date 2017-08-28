@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Audio;
 
 public class MenuMusicController : MonoBehaviour {
@@ -49,6 +50,12 @@ public class MenuMusicController : MonoBehaviour {
         bgMusic = mainMenu.GetComponent<AudioSource>();
         fadeStatus = FadeStatus.Idle;
 
+        SceneManager.sceneLoaded += OnSceneLoaded;
+
+    }
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
     void doStuff()
@@ -83,10 +90,10 @@ public class MenuMusicController : MonoBehaviour {
         }
     }
 
-    void OnLevelWasLoaded(int levelIndex)
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         //Debug.Log(string.Format("OnLevelWasLoaded() called. current scene = {0}, ActivationScene = {1}", levelIndex, LevelToActivateIn));
-        if (activationTime == ActivationTime.OnStartOrLevelLoad && levelIndex == LevelToActivateIn)
+        if (activationTime == ActivationTime.OnStartOrLevelLoad && scene.buildIndex == LevelToActivateIn)
         {
             Debug.Log(string.Format("activation time & levelIndex correct. ACTIVATING! object = " + Helper.GetHierarchy(gameObject)));
             doStuff();

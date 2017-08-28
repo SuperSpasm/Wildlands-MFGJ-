@@ -357,8 +357,8 @@ public class BGCameraController : MonoBehaviour {
     {
 
         float bgImageHeight = bgTopRight.position.y - bgBottomLeft.position.y;
-        float bgImageWidth = bgTopRight.position.x - bgBottomLeft.position.x;
-        float targetHalfWidth = targetAspect * targetHalfHeight;
+        //float bgImageWidth = bgTopRight.position.x - bgBottomLeft.position.x;
+        //float targetHalfWidth = targetAspect * targetHalfHeight;
 
         if (targetHalfHeight * 2 >= bgImageHeight)// || targetHalfWidth * 2 >= bgImageWidth)
             return true;

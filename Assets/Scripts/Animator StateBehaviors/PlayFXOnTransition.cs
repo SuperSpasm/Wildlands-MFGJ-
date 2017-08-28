@@ -48,7 +48,7 @@ public class PlayFXOnTransition : StateMachineBehaviour {
 
         if (playFXOnEnter && !stateRepeating)
             playerSFXController.playFX(enterFXIndex);
-        Debug.Log("entered state. repeating? " + stateRepeating);
+        //Debug.Log("entered state. repeating? " + stateRepeating);
         stateRepeating = true;                  // make sure not to repeat this again until the state is exited and entered again
     }
 

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 
 public class DontDestroy : MonoBehaviour {
@@ -13,11 +14,18 @@ public class DontDestroy : MonoBehaviour {
 	{
         if (stillInOriginScene)
             stillInOriginScene = false;
-        transform.parent = null;                        // unparent so that DontDestroyOnLoad will work
+        transform.SetParent(null);                        // unparent so that DontDestroyOnLoad will work
 		DontDestroyOnLoad(gameObject);
+
+        SceneManager.sceneLoaded += OnSceneLoaded;
 	}
 
-    void OnLevelWasLoaded(int index)
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         if (stillInOriginScene)
         {
@@ -26,7 +34,7 @@ public class DontDestroy : MonoBehaviour {
         }
         if (resetPosOnLoad)
             transform.position = newPos;
-        if (index == sceneToDestroy)
+        if (scene.buildIndex == sceneToDestroy)
         {
             Debug.Log("destroying " + gameObject.name);
             Destroy(gameObject);

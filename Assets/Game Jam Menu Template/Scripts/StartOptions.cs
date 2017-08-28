@@ -30,7 +30,8 @@ public class StartOptions : MonoBehaviour {
 
         musicControl = GetComponent<MenuMusicController>();
 		gameController = GameObject.FindGameObjectWithTag ("GameController");
-	}
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
 
 	public void StartButtonClicked()
 	{
@@ -39,10 +40,15 @@ public class StartOptions : MonoBehaviour {
 
 	}
 
-	//Once the level has loaded, check if we want to call PlayLevelMusic
-	void OnLevelWasLoaded(int sceneIndex)
-	{
-        if (sceneIndex == 0)                                            // if the game was won and the first scene (main menu) was reloaded
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    //Once the level has loaded, check if we want to call PlayLevelMusic
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.buildIndex == 0)                                            // if the game was won and the first scene (main menu) was reloaded
         {
             ResetMainMenu();
         }
